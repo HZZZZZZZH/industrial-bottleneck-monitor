@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "updatedAt": "2026-06-01T10:00:00.000Z",
+  "items": [
+    {
+      "ticker": "AXTI",
+      "symbol": "AXTI.US",
+      "requestedDate": "2025-05-14",
+      "priceDate": "2025-05-14",
+      "price": 1.44,
+      "status": "exact",
+      "reliable": true,
+      "provider": "yahoo_finance",
+      "method": "manual_verified_us_equity_close",
+      "sourceUrl": "https://finance.yahoo.com/quote/AXTI/history/",
+      "note": "Yahoo/Polygon-style US equity close is 1.44; Trading212 CFD history showed 1.43, so the system uses the primary equity close for the validation anchor.",
+      "verifiedAt": "2026-06-01"
+    },
+    {
+      "ticker": "SIVE",
+      "symbol": "SIVE.ST",
+      "requestedDate": "2024-11-12",
+      "priceDate": "2024-11-12",
+      "price": 4.78,
+      "status": "manual_estimate",
+      "reliable": true,
+      "provider": "manual_estimate",
+      "method": "validation_date_close_estimate",
+      "sourceUrl": "https://stockanalysis.com/quote/sto/SIVE/history/",
+      "tolerancePct": 2,
+      "note": "Approximate validation-date close retained from the original thesis seed; accepted tolerance is 1-2% because this system uses anchors for research attribution, not trade execution.",
+      "verifiedAt": "2026-06-01"
+    },
+    {
+      "ticker": "MU",
+      "symbol": "MU.US",
+      "requestedDate": "2024-06-26",
+      "priceDate": "2024-06-26",
+      "price": 142.36,
+      "status": "manual_estimate",
+      "reliable": true,
+      "provider": "businessquant_fintel",
+      "method": "validation_date_close_estimate",
+      "sourceUrl": "https://businessquant.com/metrics/mu/price",
+      "tolerancePct": 2,
+      "note": "Searchable historical sources show MU close near 142.36 on 2024-06-26; this replaces EODHD's one-year-history fallback anchor.",
+      "verifiedAt": "2026-06-01"
+    }
+  ]
+}

@@ -1,0 +1,562 @@
+{
+  "version": 1,
+  "updatedAt": "2026-06-01T10:31:55.158Z",
+  "items": [
+    {
+      "ticker": "AXTI",
+      "name": "AXT Inc.",
+      "industry": "化合物半导体材料",
+      "theme": "InP/GaAs 衬底",
+      "stage": "backlog 验证",
+      "price": 103.16,
+      "day": -10.84,
+      "month": 30.22,
+      "sinceAdded": 7064,
+      "validation": {
+        "date": "2025-05-14",
+        "price": 1.44,
+        "trigger": "InP backlog 与 InP revenue 同时进入可追踪状态",
+        "priceDate": "2025-05-14",
+        "priceProvider": "yahoo_finance",
+        "priceMethod": "manual_verified_us_equity_close",
+        "priceStatus": "exact",
+        "priceSourceUrl": "https://finance.yahoo.com/quote/AXTI/history/",
+        "anchorReliable": true,
+        "gainPct": 7063.89,
+        "tolerancePct": null,
+        "note": "Yahoo/Polygon-style US equity close is 1.44; Trading212 CFD history showed 1.43, so the system uses the primary equity close for the validation anchor."
+      },
+      "marketCap": "约 90 亿美元",
+      "thesis": "InP 衬底处于 800G/1.6T 光模块与 CPO 激光器上游，客户拉货能较快反映到收入与毛利。",
+      "leadMetric": "InP backlog / InP revenue / 出口许可 / 6-inch InP 扩产",
+      "scores": {
+        "validation": 82,
+        "scarcity": 86,
+        "wave": 88,
+        "mismatch": 84,
+        "time": 78
+      },
+      "metrics": [
+        {
+          "label": "InP backlog",
+          "value": ">$100M",
+          "score": 84
+        },
+        {
+          "label": "InP revenue",
+          "value": "$13.6M/Q",
+          "score": 72
+        },
+        {
+          "label": "毛利率",
+          "value": "29.6%",
+          "score": 68
+        },
+        {
+          "label": "出口许可风险",
+          "value": "高",
+          "score": 36,
+          "inverse": true
+        }
+      ],
+      "risk": {
+        "dilution": 42,
+        "execution": 45,
+        "valuation": 78,
+        "export": 82,
+        "customer": 38
+      },
+      "sentiment": {
+        "searchSpike": 6.4,
+        "officialCoverage": 58,
+        "reportedMultiple": 4.2,
+        "socialCrowding": 78
+      }
+    },
+    {
+      "ticker": "SIVE",
+      "name": "Sivers Semiconductors",
+      "industry": "光子学器件",
+      "theme": "CPO / ELS 激光器",
+      "stage": "pipeline 验证",
+      "price": 68.95,
+      "day": -1.78,
+      "month": 81.45,
+      "sinceAdded": 1342,
+      "validation": {
+        "date": "2024-11-12",
+        "price": 4.78,
+        "trigger": "CPO/ELS pipeline 变成资本可追踪的商业机会池",
+        "priceDate": "2024-11-12",
+        "priceProvider": "manual_estimate",
+        "priceMethod": "validation_date_close_estimate",
+        "priceStatus": "manual_estimate",
+        "priceSourceUrl": "https://stockanalysis.com/quote/sto/SIVE/history/",
+        "anchorReliable": true,
+        "gainPct": 1342.47,
+        "tolerancePct": 2,
+        "note": "Approximate validation-date close retained from the original thesis seed; accepted tolerance is 1-2% because this system uses anchors for research attribution, not trade execution."
+      },
+      "marketCap": "约 20B+ SEK",
+      "thesis": "CPO 外部光源与 DFB 激光器的高 beta 标的，资本可追踪 pipeline、Jabil/O-Net/POET 等商业线索。",
+      "leadMetric": "opportunity pipeline -> backlog -> production order -> photonics revenue",
+      "scores": {
+        "validation": 66,
+        "scarcity": 82,
+        "wave": 93,
+        "mismatch": 88,
+        "time": 74
+      },
+      "metrics": [
+        {
+          "label": "pipeline",
+          "value": "$799M",
+          "score": 78
+        },
+        {
+          "label": "pipeline 增速",
+          "value": "+77%",
+          "score": 82
+        },
+        {
+          "label": "收入兑现",
+          "value": "早期",
+          "score": 42
+        },
+        {
+          "label": "现金/融资",
+          "value": "偏紧",
+          "score": 45,
+          "inverse": true
+        }
+      ],
+      "risk": {
+        "dilution": 62,
+        "execution": 68,
+        "valuation": 86,
+        "export": 22,
+        "customer": 48
+      },
+      "sentiment": {
+        "searchSpike": 9.2,
+        "officialCoverage": 86,
+        "reportedMultiple": 16,
+        "socialCrowding": 94
+      }
+    },
+    {
+      "ticker": "POET",
+      "name": "POET Technologies",
+      "industry": "光子集成平台",
+      "theme": "Optical Interposer",
+      "stage": "PO / 商业化前夜",
+      "price": 12.29,
+      "day": -7.32,
+      "month": 72.61,
+      "sinceAdded": 65,
+      "validation": {
+        "date": "2025-10-21",
+        "price": 7.45,
+        "trigger": "Lumilens PO 让平台路线从故事进入订单线索",
+        "priceDate": "2025-10-21",
+        "priceProvider": "eodhd",
+        "priceMethod": "first_trading_day_on_or_after_validation_date",
+        "priceStatus": "exact",
+        "priceSourceUrl": null,
+        "anchorReliable": true,
+        "gainPct": 64.97
+      },
+      "marketCap": "约数十亿美元",
+      "thesis": "平台级光子集成路线，想象空间大于单一组件；Lumilens PO 提供初级商业验证。",
+      "leadMetric": "purchase order / sampling / design win / 1.6T module revenue",
+      "scores": {
+        "validation": 57,
+        "scarcity": 80,
+        "wave": 91,
+        "mismatch": 76,
+        "time": 52
+      },
+      "metrics": [
+        {
+          "label": "初始 PO",
+          "value": "$50M",
+          "score": 66
+        },
+        {
+          "label": "Q1 revenue",
+          "value": "$0.5M",
+          "score": 22
+        },
+        {
+          "label": "现金缓冲",
+          "value": "强",
+          "score": 76
+        },
+        {
+          "label": "量产风险",
+          "value": "高",
+          "score": 70,
+          "inverse": true
+        }
+      ],
+      "risk": {
+        "dilution": 54,
+        "execution": 82,
+        "valuation": 72,
+        "export": 18,
+        "customer": 62
+      },
+      "sentiment": {
+        "searchSpike": 5.8,
+        "officialCoverage": 48,
+        "reportedMultiple": 2.6,
+        "socialCrowding": 72
+      }
+    },
+    {
+      "ticker": "VECO",
+      "name": "Veeco Instruments",
+      "industry": "半导体设备",
+      "theme": "InP 激光设备",
+      "stage": "订单验证",
+      "price": 57.64,
+      "day": -2.52,
+      "month": 15.63,
+      "sinceAdded": 11,
+      "validation": {
+        "date": "2026-04-24",
+        "price": 51.73,
+        "trigger": "InP laser equipment 大订单确认上游设备瓶颈",
+        "priceDate": "2026-04-24",
+        "priceProvider": "eodhd",
+        "priceMethod": "first_trading_day_on_or_after_validation_date",
+        "priceStatus": "exact",
+        "priceSourceUrl": null,
+        "anchorReliable": true,
+        "gainPct": 11.42
+      },
+      "marketCap": "约 35 亿美元",
+      "thesis": "InP 激光器扩产的上游设备铲子股，订单最硬，但收入确认与客户扩产周期较慢。",
+      "leadMetric": "InP laser equipment orders / shipment schedule / 2027 revenue ramp",
+      "scores": {
+        "validation": 90,
+        "scarcity": 78,
+        "wave": 84,
+        "mismatch": 80,
+        "time": 46
+      },
+      "metrics": [
+        {
+          "label": "设备订单",
+          "value": ">$250M",
+          "score": 92
+        },
+        {
+          "label": "交付",
+          "value": "2026-2027",
+          "score": 54
+        },
+        {
+          "label": "客户数量",
+          "value": "多客户",
+          "score": 76
+        },
+        {
+          "label": "收入滞后",
+          "value": "明显",
+          "score": 66,
+          "inverse": true
+        }
+      ],
+      "risk": {
+        "dilution": 18,
+        "execution": 44,
+        "valuation": 42,
+        "export": 24,
+        "customer": 34
+      },
+      "sentiment": {
+        "searchSpike": 2.3,
+        "officialCoverage": 24,
+        "reportedMultiple": 0.8,
+        "socialCrowding": 30
+      }
+    },
+    {
+      "ticker": "AAOI",
+      "name": "Applied Optoelectronics",
+      "industry": "光模块/光器件",
+      "theme": "光模块 / 激光",
+      "stage": "财报验证",
+      "price": 158.41,
+      "day": -6.28,
+      "month": -3.62,
+      "sinceAdded": 844,
+      "validation": {
+        "date": "2025-06-17",
+        "price": 16.78,
+        "trigger": "AI optical revenue 与客户供货线索进入财报验证",
+        "priceDate": "2025-06-17",
+        "priceProvider": "eodhd",
+        "priceMethod": "first_trading_day_on_or_after_validation_date",
+        "priceStatus": "exact",
+        "priceSourceUrl": null,
+        "anchorReliable": true,
+        "gainPct": 844.04
+      },
+      "marketCap": "约百亿美元级",
+      "thesis": "收入验证较硬，激光瓶颈与 AI 光模块需求直接受益；短期最大问题是 ATM 稀释压力。",
+      "leadMetric": "AI optical revenue / long-term supply agreement / ATM 消化速度",
+      "scores": {
+        "validation": 78,
+        "scarcity": 70,
+        "wave": 86,
+        "mismatch": 76,
+        "time": 86
+      },
+      "metrics": [
+        {
+          "label": "收入验证",
+          "value": "强",
+          "score": 82
+        },
+        {
+          "label": "潜在 LTA",
+          "value": "待确认",
+          "score": 62
+        },
+        {
+          "label": "ATM 压力",
+          "value": "$600M",
+          "score": 82,
+          "inverse": true
+        },
+        {
+          "label": "转收入速度",
+          "value": "快",
+          "score": 86
+        }
+      ],
+      "risk": {
+        "dilution": 86,
+        "execution": 38,
+        "valuation": 74,
+        "export": 12,
+        "customer": 42
+      },
+      "sentiment": {
+        "searchSpike": 7.4,
+        "officialCoverage": 64,
+        "reportedMultiple": 5.8,
+        "socialCrowding": 82
+      }
+    },
+    {
+      "ticker": "MU",
+      "name": "Micron Technology",
+      "industry": "存储芯片",
+      "theme": "HBM / DRAM",
+      "stage": "财报爆发",
+      "price": 971,
+      "day": 5.14,
+      "month": 87.76,
+      "sinceAdded": 582,
+      "validation": {
+        "date": "2024-06-26",
+        "price": 142.36,
+        "trigger": "HBM sold-out、毛利与指引上修形成财报验证",
+        "priceDate": "2024-06-26",
+        "priceProvider": "businessquant_fintel",
+        "priceMethod": "validation_date_close_estimate",
+        "priceStatus": "manual_estimate",
+        "priceSourceUrl": "https://businessquant.com/metrics/mu/price",
+        "anchorReliable": true,
+        "gainPct": 582.07,
+        "tolerancePct": 2,
+        "note": "Searchable historical sources show MU close near 142.36 on 2024-06-26; this replaces EODHD's one-year-history fallback anchor."
+      },
+      "marketCap": "约 1T 美元",
+      "thesis": "HBM 与内存供需错配已经反映在财报，但竞争对手明确，剩余赔率低于早期阶段。",
+      "leadMetric": "HBM sold-out / gross margin / FY EPS 上修 / capex discipline",
+      "scores": {
+        "validation": 94,
+        "scarcity": 64,
+        "wave": 90,
+        "mismatch": 76,
+        "time": 92
+      },
+      "metrics": [
+        {
+          "label": "财报验证",
+          "value": "极强",
+          "score": 94
+        },
+        {
+          "label": "竞争格局",
+          "value": "三强",
+          "score": 54
+        },
+        {
+          "label": "毛利率趋势",
+          "value": "上行",
+          "score": 82
+        },
+        {
+          "label": "剩余赔率",
+          "value": "收窄",
+          "score": 58
+        }
+      ],
+      "risk": {
+        "dilution": 8,
+        "execution": 22,
+        "valuation": 68,
+        "export": 28,
+        "customer": 26
+      },
+      "sentiment": {
+        "searchSpike": 8.1,
+        "officialCoverage": 91,
+        "reportedMultiple": 10,
+        "socialCrowding": 88
+      }
+    },
+    {
+      "ticker": "XFAB",
+      "name": "X-FAB",
+      "industry": "特色晶圆代工",
+      "theme": "SiC/GaN + Photonics",
+      "stage": "低谷反转",
+      "price": 10.76,
+      "day": -5.28,
+      "month": 71.07,
+      "sinceAdded": 71,
+      "validation": {
+        "date": "2026-04-30",
+        "price": 6.29,
+        "trigger": "WBG 与 photonics 增速开始抵消传统业务拖累",
+        "priceDate": "2026-04-30",
+        "priceProvider": "eodhd",
+        "priceMethod": "first_trading_day_on_or_after_validation_date",
+        "priceStatus": "exact",
+        "priceSourceUrl": null,
+        "anchorReliable": true,
+        "gainPct": 71.07
+      },
+      "marketCap": "约 15 亿美元",
+      "thesis": "传统汽车/工业拖累估值，wide-bandgap 与 microsystems/photonics 是潜在 AI 电力与光子期权。",
+      "leadMetric": "wide-bandgap revenue / photonics revenue / capacity utilization",
+      "scores": {
+        "validation": 62,
+        "scarcity": 68,
+        "wave": 72,
+        "mismatch": 66,
+        "time": 58
+      },
+      "metrics": [
+        {
+          "label": "WBG 增速",
+          "value": "+152%",
+          "score": 82
+        },
+        {
+          "label": "Photonics 增速",
+          "value": "+42%",
+          "score": 70
+        },
+        {
+          "label": "总收入",
+          "value": "-4%",
+          "score": 42
+        },
+        {
+          "label": "AI 纯度",
+          "value": "中",
+          "score": 52
+        }
+      ],
+      "risk": {
+        "dilution": 24,
+        "execution": 48,
+        "valuation": 38,
+        "export": 20,
+        "customer": 44
+      },
+      "sentiment": {
+        "searchSpike": 3.9,
+        "officialCoverage": 34,
+        "reportedMultiple": 1.8,
+        "socialCrowding": 46
+      }
+    },
+    {
+      "ticker": "CAMT",
+      "name": "Camtek",
+      "industry": "先进封装检测",
+      "theme": "HBM / 先进封装检测",
+      "stage": "订单验证",
+      "price": 171.66,
+      "day": -1.79,
+      "month": -10.56,
+      "sinceAdded": 42,
+      "validation": {
+        "date": "2025-12-10",
+        "price": 121.12,
+        "trigger": "HBM/advanced packaging 检测订单提供需求验证",
+        "priceDate": "2025-12-10",
+        "priceProvider": "eodhd",
+        "priceMethod": "first_trading_day_on_or_after_validation_date",
+        "priceStatus": "exact",
+        "priceSourceUrl": null,
+        "anchorReliable": true,
+        "gainPct": 41.73
+      },
+      "marketCap": "约 80 亿美元",
+      "thesis": "HBM 与 advanced packaging 检测量测，订单验证强，确定性高，但赔率不如材料小票。",
+      "leadMetric": "HBM order / AI-related revenue / gross margin",
+      "scores": {
+        "validation": 88,
+        "scarcity": 72,
+        "wave": 82,
+        "mismatch": 70,
+        "time": 74
+      },
+      "metrics": [
+        {
+          "label": "HBM 订单",
+          "value": "$260M",
+          "score": 88
+        },
+        {
+          "label": "AI 收入占比",
+          "value": "约一半",
+          "score": 76
+        },
+        {
+          "label": "估值压力",
+          "value": "中高",
+          "score": 64,
+          "inverse": true
+        },
+        {
+          "label": "收入节奏",
+          "value": "中",
+          "score": 68
+        }
+      ],
+      "risk": {
+        "dilution": 10,
+        "execution": 30,
+        "valuation": 66,
+        "export": 20,
+        "customer": 36
+      },
+      "sentiment": {
+        "searchSpike": 2.9,
+        "officialCoverage": 36,
+        "reportedMultiple": 2.2,
+        "socialCrowding": 38
+      }
+    }
+  ]
+}

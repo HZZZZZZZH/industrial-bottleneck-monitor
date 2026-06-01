@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "fetch:quotes": "node scripts/fetch-eodhd-quotes.mjs",
+    "validate:data": "node scripts/validate-data.mjs",
+    "serve": "python3 -m http.server 8765"
+  }
+}

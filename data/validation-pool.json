@@ -1,0 +1,200 @@
+{
+  "version": 1,
+  "updatedAt": "2026-06-01T06:24:49.925Z",
+  "cadence": "weekly",
+  "items": [
+    {
+      "ticker": "BESI",
+      "symbol": "BESI.AS",
+      "name": "BE Semiconductor Industries",
+      "country": "荷兰",
+      "exchange": "Euronext Amsterdam",
+      "currency": "EUR",
+      "industry": "先进封装设备",
+      "theme": "hybrid bonding",
+      "stage": "验证池",
+      "marketCapUsd": "约 120 亿美元",
+      "revenueUsd": "约 8 亿美元",
+      "profitUsd": "约 2 亿美元",
+      "leadMetric": "hybrid bonding orders / AI package adoption / gross margin",
+      "thesis": "混合键合是先进封装继续提高互连密度的潜在关键设备环节，若 AI 封装加速采用，订单弹性高。",
+      "evidence": "已有 hybrid bonding 订单线索和客户验证，但还需确认持续订单和收入兑现。",
+      "nextCheck": "核验 hybrid bonding backlog、客户量产节奏、订单是否连续。",
+      "price": 148,
+      "day": 1.2,
+      "month": 18,
+      "sinceAdded": 55,
+      "validation": {
+        "date": "2026-04-18",
+        "price": 95,
+        "trigger": "hybrid bonding 订单线索进入财报和客户验证口径"
+      },
+      "scores": {
+        "validation": 72,
+        "scarcity": 78,
+        "wave": 84,
+        "mismatch": 72,
+        "time": 54
+      },
+      "metrics": [
+        {
+          "label": "hybrid bonding orders",
+          "value": "订单线索",
+          "score": 72
+        },
+        {
+          "label": "收入兑现",
+          "value": "待放量",
+          "score": 52
+        },
+        {
+          "label": "毛利率",
+          "value": "高",
+          "score": 76
+        }
+      ],
+      "risk": {
+        "dilution": 8,
+        "execution": 54,
+        "valuation": 62,
+        "export": 12,
+        "customer": 48
+      },
+      "sentiment": {
+        "searchSpike": 3.4,
+        "officialCoverage": 32,
+        "reportedMultiple": 1.4,
+        "socialCrowding": 38
+      }
+    },
+    {
+      "ticker": "COHR",
+      "symbol": "COHR.US",
+      "name": "Coherent",
+      "country": "美国",
+      "exchange": "NYSE",
+      "currency": "USD",
+      "industry": "光子学器件",
+      "theme": "datacom lasers / SiC",
+      "stage": "验证池",
+      "marketCapUsd": "约 150 亿美元",
+      "revenueUsd": "约 50 亿美元",
+      "profitUsd": "盈利修复中",
+      "leadMetric": "AI datacom revenue / transceiver lasers / margin recovery",
+      "thesis": "AI 光通信拉动 datacom lasers，同时公司还有 SiC 资产选择权，关键是利润率修复和订单质量。",
+      "evidence": "AI datacom 需求已有收入线索，但公司业务复杂，需要拆分纯度。",
+      "nextCheck": "核验 AI datacom 收入占比、毛利修复、SiC 资产处置和订单连续性。",
+      "price": 95,
+      "day": 2,
+      "month": 34,
+      "sinceAdded": 92,
+      "validation": {
+        "date": "2026-03-12",
+        "price": 49.5,
+        "trigger": "AI datacom 需求进入收入和订单讨论"
+      },
+      "scores": {
+        "validation": 74,
+        "scarcity": 70,
+        "wave": 86,
+        "mismatch": 72,
+        "time": 72
+      },
+      "metrics": [
+        {
+          "label": "AI datacom",
+          "value": "收入线索",
+          "score": 74
+        },
+        {
+          "label": "利润率",
+          "value": "修复中",
+          "score": 56
+        },
+        {
+          "label": "业务复杂度",
+          "value": "高",
+          "score": 62,
+          "inverse": true
+        }
+      ],
+      "risk": {
+        "dilution": 18,
+        "execution": 52,
+        "valuation": 58,
+        "export": 18,
+        "customer": 44
+      },
+      "sentiment": {
+        "searchSpike": 4.5,
+        "officialCoverage": 36,
+        "reportedMultiple": 1.8,
+        "socialCrowding": 46
+      }
+    },
+    {
+      "ticker": "PRY",
+      "symbol": "PRY.MI",
+      "name": "Prysmian",
+      "country": "意大利",
+      "exchange": "Borsa Italiana",
+      "currency": "EUR",
+      "industry": "电力设备",
+      "theme": "高压电缆 / 数据中心电力",
+      "stage": "验证池",
+      "marketCapUsd": "约 210 亿美元",
+      "revenueUsd": "约 170 亿美元",
+      "profitUsd": "约 10 亿美元",
+      "leadMetric": "transmission backlog / grid orders / data center power demand",
+      "thesis": "电网升级、海缆和数据中心电力需求带来长周期订单，高压电缆供给难快速扩。",
+      "evidence": "backlog 和订单验证较硬，但想象空间更多来自电力 beta 而非单一 AI 纯度。",
+      "nextCheck": "核验 transmission backlog、订单毛利、产能扩张和美元利润弹性。",
+      "price": 68,
+      "day": 0.6,
+      "month": 22,
+      "sinceAdded": 70,
+      "validation": {
+        "date": "2026-03-28",
+        "price": 40,
+        "trigger": "电网和高压电缆 backlog 上修进入可追踪状态"
+      },
+      "scores": {
+        "validation": 78,
+        "scarcity": 66,
+        "wave": 78,
+        "mismatch": 78,
+        "time": 64
+      },
+      "metrics": [
+        {
+          "label": "transmission backlog",
+          "value": "强",
+          "score": 78
+        },
+        {
+          "label": "收入兑现",
+          "value": "稳",
+          "score": 66
+        },
+        {
+          "label": "AI 纯度",
+          "value": "中",
+          "score": 48
+        }
+      ],
+      "risk": {
+        "dilution": 10,
+        "execution": 34,
+        "valuation": 50,
+        "export": 8,
+        "customer": 28
+      },
+      "sentiment": {
+        "searchSpike": 2.4,
+        "officialCoverage": 26,
+        "reportedMultiple": 0.8,
+        "socialCrowding": 24
+      }
+    }
+  ]
+}

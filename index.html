@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>工业瓶颈量化投研台</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Industrial Bottleneck Monitor</p>
+          <h1>工业瓶颈量化投研台</h1>
+        </div>
+        <div class="top-actions">
+          <select id="sortMode" class="select-control" aria-label="排序">
+            <option value="score">综合性价比</option>
+            <option value="fundamental">基本面</option>
+            <option value="demand">需求兑现</option>
+            <option value="media">媒体热度</option>
+            <option value="risk">风险</option>
+            <option value="move">涨幅</option>
+          </select>
+          <button class="ghost-button" id="openReview" type="button">复盘</button>
+          <button class="ghost-button" id="openPipeline" type="button">入池</button>
+          <button class="ghost-button" id="openFramework" type="button">框架</button>
+          <button class="ghost-button" id="openSettings" type="button">参数</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="overview-board" aria-label="portfolio summary">
+          <div class="metric-strip" aria-label="system status">
+            <div class="metric">
+              <span class="metric-label">观察池</span>
+              <strong id="stockCount">0</strong>
+            </div>
+            <div class="metric">
+              <span class="metric-label">止损红灯</span>
+              <strong id="redCount">0</strong>
+            </div>
+            <div class="metric">
+              <span class="metric-label">热度卖点</span>
+              <strong id="heatCount">0</strong>
+            </div>
+            <div class="metric">
+              <span class="metric-label">全局状态</span>
+              <strong id="globalSignal">计算中</strong>
+            </div>
+          </div>
+
+          <button class="portfolio-card" id="openPortfolio" type="button" aria-label="打开投资组合">
+            <div class="portfolio-card-head">
+              <div class="portfolio-title-line">
+                <h2>10 万 U 工业瓶颈组合</h2>
+                <strong id="portfolioPnl">0.00%</strong>
+              </div>
+              <span>点击查看持仓</span>
+            </div>
+            <div class="portfolio-card-body">
+              <div class="portfolio-card-stats">
+                <span><em>仓位</em><strong id="portfolioExposure">--</strong></span>
+                <span><em>持仓数量</em><strong id="portfolioCash">--</strong></span>
+                <span><em>运行时长</em><strong id="portfolioActionMix">--</strong></span>
+              </div>
+              <svg viewBox="0 0 220 58" aria-hidden="true">
+                <polyline id="portfolioCurve" points="0,38 44,38 88,38 132,38 176,38 220,38"></polyline>
+              </svg>
+            </div>
+          </button>
+        </section>
+
+        <section class="panel watch-panel" aria-labelledby="watchTitle">
+          <div class="panel-head compact-head">
+            <div>
+              <p class="section-kicker">Watchlist</p>
+              <h2 id="watchTitle">自选股票</h2>
+            </div>
+            <div class="data-strip">
+              <span>价格频率：日频</span>
+              <span id="lastRefresh">最近更新：--</span>
+              <span>用途：投研评分，不做盘中交易</span>
+            </div>
+          </div>
+
+          <div class="pool-tabs" role="tablist" aria-label="股票池">
+            <button class="pool-tab active" type="button" data-pool="watch">
+              自选股票 <span id="watchPoolCount">0</span>
+            </button>
+            <button class="pool-tab" type="button" data-pool="discovery">
+              发现池 <span id="discoveryPoolCount">0</span>
+            </button>
+            <button class="pool-tab" type="button" data-pool="validation">
+              验证池 <span id="validationPoolCount">0</span>
+            </button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr id="poolHeadRow"></tr>
+              </thead>
+              <tbody id="watchRows"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+
+      <section class="detail-drawer" id="detailDrawer" aria-labelledby="detailTicker" aria-hidden="true">
+        <div class="drawer-backdrop" id="closeDetail"></div>
+        <article class="drawer-panel">
+          <div class="drawer-head">
+            <div>
+              <p class="section-kicker">Company Detail</p>
+              <h2><span id="detailTicker">--</span></h2>
+              <p id="detailName">点击股票查看详情</p>
+            </div>
+            <button class="ghost-button" id="closeDetailButton" type="button">关闭</button>
+          </div>
+
+          <div class="selected-card">
+            <div class="selected-head">
+              <div>
+                <span class="pill" id="selectedTickerPill">未选择</span>
+                <span class="action-chip action-hold" id="actionPill">持仓</span>
+              </div>
+              <div class="traffic-light" id="trafficLight" aria-label="risk light">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+            <div class="score-grid">
+              <div>
+                <span>当前动作</span>
+                <strong id="actionScore">--</strong>
+              </div>
+              <div>
+                <span>基本面档</span>
+                <strong id="fundamentalScore">--</strong>
+              </div>
+              <div>
+                <span>需求兑现档</span>
+                <strong id="demandScore">--</strong>
+              </div>
+              <div>
+                <span>验证入池日</span>
+                <strong id="validationDate">--</strong>
+              </div>
+              <div>
+                <span>验证后涨幅</span>
+                <strong id="validationMove">--</strong>
+              </div>
+              <div>
+                <span>情绪档</span>
+                <strong id="mediaScore">--</strong>
+              </div>
+              <div>
+                <span>综合性价比档</span>
+                <strong id="compositeScore">--</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="drawer-grid">
+            <section class="signal-block">
+              <h3>投研逻辑</h3>
+              <div class="logic-stack" id="logicStack"></div>
+            </section>
+            <section class="signal-block">
+              <h3>评分拆解</h3>
+              <div id="scoreBreakdown" class="score-breakdown"></div>
+            </section>
+            <section class="signal-block">
+              <h3>公司专属止损</h3>
+              <div id="riskTriggers" class="alerts"></div>
+            </section>
+            <section class="signal-block">
+              <h3>核心追踪指标</h3>
+              <div id="leadMetrics" class="lead-metrics"></div>
+            </section>
+            <section class="signal-block">
+              <h3>情绪与卖点</h3>
+              <div id="sentimentBars" class="sentiment-bars"></div>
+            </section>
+            <section class="signal-block">
+              <h3>警报</h3>
+              <div id="alerts" class="alerts"></div>
+            </section>
+          </div>
+        </article>
+      </section>
+
+      <section class="modal" id="frameworkModal" aria-hidden="true">
+        <div class="modal-backdrop" data-close-modal="frameworkModal"></div>
+        <article class="modal-panel">
+          <div class="drawer-head">
+            <div>
+              <p class="section-kicker">Research Framework</p>
+              <h2>通用投研框架</h2>
+            </div>
+            <button class="ghost-button" data-close-modal="frameworkModal" type="button">关闭</button>
+          </div>
+          <div class="rule-block">
+            <h3>入池标准</h3>
+            <div id="entryCriteriaCards" class="score-models"></div>
+          </div>
+          <div class="rule-block">
+            <h3>评分标准</h3>
+            <div id="scoreModelCards" class="score-models"></div>
+          </div>
+          <div class="rule-block">
+            <h3>通用不可容忍风险</h3>
+            <ul id="hardRules" class="rule-list"></ul>
+          </div>
+        </article>
+      </section>
+
+      <section class="modal" id="settingsModal" aria-hidden="true">
+        <div class="modal-backdrop" data-close-modal="settingsModal"></div>
+        <article class="modal-panel">
+          <div class="drawer-head">
+            <div>
+              <p class="section-kicker">Weights</p>
+              <h2>4 档参数</h2>
+            </div>
+            <button class="ghost-button" data-close-modal="settingsModal" type="button">关闭</button>
+          </div>
+          <div class="factor-block">
+            <div class="subhead-row">
+              <h3>综合权重</h3>
+              <button class="ghost-button" id="resetWeights" type="button">重置</button>
+            </div>
+            <div id="factorControls" class="factor-controls"></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="modal" id="reviewModal" aria-hidden="true">
+        <div class="modal-backdrop" data-close-modal="reviewModal"></div>
+        <article class="modal-panel center-panel">
+          <div class="drawer-head">
+            <div>
+              <p class="section-kicker">Review System</p>
+              <h2>每周复盘中心</h2>
+              <p>每周一次，把组合动作、财报验证、交易执行和错误归因沉淀成可回测记录。</p>
+            </div>
+            <button class="ghost-button" data-close-modal="reviewModal" type="button">关闭</button>
+          </div>
+          <div class="rule-block">
+            <h3>复盘模块</h3>
+            <div id="reviewCadenceCards" class="center-grid"></div>
+          </div>
+          <div class="rule-block">
+            <h3>本周复盘清单</h3>
+            <div class="table-wrap center-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>模块</th>
+                    <th>频率</th>
+                    <th>检查重点</th>
+                    <th>输出</th>
+                  </tr>
+                </thead>
+                <tbody id="reviewChecklistRows"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="rule-block">
+            <h3>错误归因</h3>
+            <div id="errorAttributionCards" class="center-grid"></div>
+          </div>
+          <div class="rule-block">
+            <h3>决策日志</h3>
+            <div class="table-wrap center-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>日期</th>
+                    <th>股票</th>
+                    <th>动作</th>
+                    <th>价格</th>
+                    <th>原因</th>
+                    <th>因子快照</th>
+                  </tr>
+                </thead>
+                <tbody id="decisionLogRows"></tbody>
+              </table>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="modal" id="pipelineModal" aria-hidden="true">
+        <div class="modal-backdrop" data-close-modal="pipelineModal"></div>
+        <article class="modal-panel center-panel">
+          <div class="drawer-head">
+            <div>
+              <p class="section-kicker">Global Intake</p>
+              <h2>全球新股入池流水线</h2>
+              <p>每周扫描全球工业、硬科技、资源类股票，统一换算美元口径后再进入验证队列。</p>
+            </div>
+            <button class="ghost-button" data-close-modal="pipelineModal" type="button">关闭</button>
+          </div>
+          <div class="rule-block">
+            <h3>全球筛选口径</h3>
+            <div id="globalScopeCards" class="center-grid"></div>
+          </div>
+          <div class="rule-block">
+            <h3>美元核心字段</h3>
+            <div id="usdMetricCards" class="center-grid"></div>
+          </div>
+          <div class="rule-block">
+            <h3>入池流水线</h3>
+            <div id="intakeStageCards" class="stage-grid"></div>
+          </div>
+          <div class="rule-block">
+            <h3>每周扫描任务</h3>
+            <div class="table-wrap center-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>步骤</th>
+                    <th>输入</th>
+                    <th>筛选条件</th>
+                    <th>输出</th>
+                  </tr>
+                </thead>
+                <tbody id="weeklyScanRows"></tbody>
+              </table>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="modal" id="portfolioModal" aria-hidden="true">
+        <div class="modal-backdrop" data-close-modal="portfolioModal"></div>
+        <article class="modal-panel portfolio-panel">
+          <div class="drawer-head">
+            <div>
+              <p class="section-kicker">Portfolio</p>
+              <h2>10 万 U 工业瓶颈组合</h2>
+              <p id="portfolioSubtitle">从 2026-06-01 开始跟踪，按日频数据更新。</p>
+            </div>
+            <button class="ghost-button" data-close-modal="portfolioModal" type="button">关闭</button>
+          </div>
+
+          <div class="portfolio-summary" id="portfolioSummary"></div>
+
+          <div class="table-wrap compact-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>股票</th>
+                  <th>角色</th>
+                  <th>目标仓位</th>
+                  <th>首批执行</th>
+                  <th>技术面买点</th>
+                  <th>减仓/止损</th>
+                </tr>
+              </thead>
+              <tbody id="portfolioRows"></tbody>
+            </table>
+          </div>
+
+          <div class="portfolio-notes">
+            <h3>执行原则</h3>
+            <div id="portfolioRules" class="alerts"></div>
+          </div>
+        </article>
+      </section>
+    </div>
+
+    <script src="./app.js?v=20260601-pricefix"></script>
+  </body>
+</html>

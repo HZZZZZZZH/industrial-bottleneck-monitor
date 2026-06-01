@@ -1,0 +1,244 @@
+{
+  "version": 1,
+  "updatedAt": "2026-06-01T06:24:49.924Z",
+  "cadence": "weekly",
+  "items": [
+    {
+      "ticker": "6146",
+      "symbol": "6146.T",
+      "name": "Disco Corp.",
+      "country": "日本",
+      "exchange": "Tokyo",
+      "currency": "JPY",
+      "industry": "半导体设备",
+      "theme": "切割/研磨/先进封装耗材",
+      "stage": "发现池",
+      "marketCapUsd": "约 350 亿美元",
+      "revenueUsd": "约 20 亿美元",
+      "profitUsd": "约 7 亿美元",
+      "leadMetric": "advanced packaging capex / blade & grinder demand / gross margin",
+      "thesis": "HBM、CoWoS、chiplet 带来晶圆减薄、切割、研磨需求，设备和耗材有高质量弹性。",
+      "evidence": "先进封装扩产链条持续紧张，但还需要核验 AI 相关订单占比和验证入池日。",
+      "nextCheck": "核验财报中 AI/advanced package 订单、客户扩产、美元市值和利润口径。",
+      "price": 0,
+      "day": 0,
+      "month": 0,
+      "sinceAdded": 0,
+      "scores": {
+        "validation": 46,
+        "scarcity": 82,
+        "wave": 84,
+        "mismatch": 76,
+        "time": 62
+      },
+      "metrics": [
+        {
+          "label": "美元市值",
+          "value": "待更新",
+          "score": 52
+        },
+        {
+          "label": "AI 订单纯度",
+          "value": "待核验",
+          "score": 38
+        },
+        {
+          "label": "毛利质量",
+          "value": "高",
+          "score": 78
+        }
+      ],
+      "risk": {
+        "dilution": 8,
+        "execution": 30,
+        "valuation": 72,
+        "export": 18,
+        "customer": 42
+      },
+      "sentiment": {
+        "searchSpike": 2.8,
+        "officialCoverage": 28,
+        "reportedMultiple": 1.2,
+        "socialCrowding": 32
+      }
+    },
+    {
+      "ticker": "4062",
+      "symbol": "4062.T",
+      "name": "Ibiden Co.",
+      "country": "日本",
+      "exchange": "Tokyo",
+      "currency": "JPY",
+      "industry": "先进封装材料",
+      "theme": "ABF substrate / AI package",
+      "stage": "发现池",
+      "marketCapUsd": "约 80 亿美元",
+      "revenueUsd": "约 25 亿美元",
+      "profitUsd": "约 3 亿美元",
+      "leadMetric": "AI substrate utilization / package substrate ASP / capex",
+      "thesis": "AI 加速器封装对 ABF substrate 需求提升，关键是客户认证和产能利用率是否重新上行。",
+      "evidence": "产业方向符合，但需要确认 AI 客户拉货是否已经进入订单和收入。",
+      "nextCheck": "核验 AI substrate 订单、稼动率、毛利率拐点与美元利润口径。",
+      "price": 0,
+      "day": 0,
+      "month": 0,
+      "sinceAdded": 0,
+      "scores": {
+        "validation": 44,
+        "scarcity": 72,
+        "wave": 82,
+        "mismatch": 70,
+        "time": 58
+      },
+      "metrics": [
+        {
+          "label": "AI substrate",
+          "value": "待核验",
+          "score": 44
+        },
+        {
+          "label": "稼动率",
+          "value": "待更新",
+          "score": 46
+        },
+        {
+          "label": "客户集中",
+          "value": "中高",
+          "score": 58,
+          "inverse": true
+        }
+      ],
+      "risk": {
+        "dilution": 10,
+        "execution": 42,
+        "valuation": 50,
+        "export": 12,
+        "customer": 58
+      },
+      "sentiment": {
+        "searchSpike": 2.1,
+        "officialCoverage": 18,
+        "reportedMultiple": 0.6,
+        "socialCrowding": 24
+      }
+    },
+    {
+      "ticker": "VACN",
+      "symbol": "VACN.SW",
+      "name": "VAT Group",
+      "country": "瑞士",
+      "exchange": "SIX Swiss",
+      "currency": "CHF",
+      "industry": "半导体零部件",
+      "theme": "真空阀 / 晶圆设备供应链",
+      "stage": "发现池",
+      "marketCapUsd": "约 130 亿美元",
+      "revenueUsd": "约 10 亿美元",
+      "profitUsd": "约 2 亿美元",
+      "leadMetric": "semi orders / vacuum valve backlog / book-to-bill",
+      "thesis": "先进制程、存储和半导体设备复苏会拉动真空阀，属于设备链核心零部件。",
+      "evidence": "有硬件稀缺性，但 AI beta 不够纯，需要确认订单周期和半导体占比。",
+      "nextCheck": "核验 book-to-bill、semi segment backlog、美元估值和订单拐点。",
+      "price": 0,
+      "day": 0,
+      "month": 0,
+      "sinceAdded": 0,
+      "scores": {
+        "validation": 48,
+        "scarcity": 76,
+        "wave": 70,
+        "mismatch": 66,
+        "time": 56
+      },
+      "metrics": [
+        {
+          "label": "semi backlog",
+          "value": "待更新",
+          "score": 50
+        },
+        {
+          "label": "订单周期",
+          "value": "复苏观察",
+          "score": 52
+        },
+        {
+          "label": "AI 纯度",
+          "value": "中",
+          "score": 44
+        }
+      ],
+      "risk": {
+        "dilution": 6,
+        "execution": 36,
+        "valuation": 58,
+        "export": 18,
+        "customer": 34
+      },
+      "sentiment": {
+        "searchSpike": 1.7,
+        "officialCoverage": 14,
+        "reportedMultiple": 0.4,
+        "socialCrowding": 20
+      }
+    },
+    {
+      "ticker": "NEX",
+      "symbol": "NEX.PA",
+      "name": "Nexans",
+      "country": "法国",
+      "exchange": "Euronext Paris",
+      "currency": "EUR",
+      "industry": "电力设备",
+      "theme": "高压电缆 / 电网升级",
+      "stage": "发现池",
+      "marketCapUsd": "约 60 亿美元",
+      "revenueUsd": "约 80 亿美元",
+      "profitUsd": "约 4 亿美元",
+      "leadMetric": "HV cable backlog / grid capex / margin",
+      "thesis": "AI 数据中心、电气化和欧洲电网升级拉动高压电缆需求，供给扩张周期长。",
+      "evidence": "行业 beta 清楚，但需要核验 backlog、定价和数据中心关联度。",
+      "nextCheck": "核验高压电缆 backlog、毛利率、美元订单口径和产能瓶颈。",
+      "price": 0,
+      "day": 0,
+      "month": 0,
+      "sinceAdded": 0,
+      "scores": {
+        "validation": 46,
+        "scarcity": 64,
+        "wave": 78,
+        "mismatch": 76,
+        "time": 60
+      },
+      "metrics": [
+        {
+          "label": "HV backlog",
+          "value": "待核验",
+          "score": 48
+        },
+        {
+          "label": "电网 capex",
+          "value": "强",
+          "score": 72
+        },
+        {
+          "label": "AI 关联",
+          "value": "待拆分",
+          "score": 42
+        }
+      ],
+      "risk": {
+        "dilution": 14,
+        "execution": 40,
+        "valuation": 44,
+        "export": 10,
+        "customer": 30
+      },
+      "sentiment": {
+        "searchSpike": 1.5,
+        "officialCoverage": 18,
+        "reportedMultiple": 0.4,
+        "socialCrowding": 18
+      }
+    }
+  ]
+}
