@@ -17,6 +17,7 @@ const factorLevels = [
 const baseWeights = Object.fromEntries(
   factors.map((factor) => [factor.key, factorLevels.find((item) => item.level === factor.level).weight])
 );
+const valuationLogic = globalThis.ValuationLogic;
 
 const scoringModels = [
   {
@@ -928,90 +929,90 @@ const portfolioPlan = {
   targetCashPct: 10,
   pnlSeries: [0, 0, 0, 0, 0, 0],
   rules: [
-    "组合不是一次性满仓：首批只按模型仓执行，剩余资金等 20D/50D、RSI、量能和公司验证信号共同触发。",
+    "组合不是一次性满仓：当前只按模型仓执行，剩余资金等 20D/50D、RSI、量能和公司验证信号共同触发。",
     "买入优先级：需求验证 = 基本面 > 赔率档 > 估值档 > 风险；技术面只负责确认价格节奏，不推翻基本面证伪。",
-    "强趋势票只低吸或突破后回踩，不在单日放量长阳时追满目标仓。",
+    "强趋势票只低吸或突破后回踩，不在单日放量长阳时把仓位打满。",
     "任何公司专属红灯触发时，先降到观察仓；若需求被证伪，不用等技术反弹。",
   ],
   positions: [
     {
       ticker: "AXTI",
       role: "InP 上游材料主线",
-      targetPct: 16,
       firstPct: 6,
       entryPrice: 103.16,
       status: "等出口许可和回踩确认",
-      buyPlan: "首批只接 6%；若价格回踩 20D/50D 后收回 5D，且 InP backlog/收入没有走弱，再加到 10-12%。突破新高必须伴随订单或许可进展。",
+      weightReason: "基本面和市场验证都强，但出口许可和短线涨幅风险还没完全解除，所以给中高仓位而不是重仓追。",
+      buyPlan: "若价格回踩 20D/50D 后收回 5D，且 InP backlog/收入没有走弱，再考虑加仓。突破新高必须伴随订单或许可进展。",
       sellPlan: "InP backlog 连续两个季度下滑、出口许可拖延超过一个季度，或热度继续暴涨但毛利/收入不跟，降到观察仓。",
     },
     {
       ticker: "SIVE",
       role: "CPO/ELS 高 beta 回调仓",
-      targetPct: 14,
       firstPct: 3,
       entryPrice: 68.95,
       status: "分批低吸，不追反弹",
-      buyPlan: "先用 3% 建观察仓；若 RSI 回到 35-45 后止跌，或跌到 20D/50D 支撑附近并收盘站回 5D，再补 3-4%。只有 pipeline 转 backlog/PO 才加到目标仓。",
+      weightReason: "高 beta 且有市场验证，但 pipeline 转 backlog/PO 还要继续确认，先用小仓蹲回调。",
+      buyPlan: "若 RSI 回到 35-45 后止跌，或跌到 20D/50D 支撑附近并收盘站回 5D，再考虑补仓。只有 pipeline 转 backlog/PO 才提高仓位。",
       sellPlan: "pipeline 两季不转 backlog/PO、融资稀释超过 8%，或媒体集中报道十倍涨幅但收入没有启动，直接降仓。",
     },
     {
       ticker: "VECO",
       role: "订单验证设备铲子",
-      targetPct: 16,
       firstPct: 8,
       entryPrice: 57.64,
       status: "首批配置，等回踩加仓",
-      buyPlan: "订单较硬，允许首批 8%；后续等 20D 回踩不破、或整理后放量突破前高，再加到 12-16%。设备收入慢，避免因短期财报收入滞后误杀。",
+      weightReason: "订单验证较硬、设备铲子属性清楚，所以仓位高于观察仓；但设备收入确认慢，仍等回踩加。",
+      buyPlan: "后续等 20D 回踩不破、或整理后放量突破前高，再考虑加仓。设备收入慢，避免因短期财报收入滞后误杀。",
       sellPlan: ">$250M InP 设备订单交付延后两个季度以上，或客户 capex 重新谈判，减到 5% 以下。",
     },
     {
       ticker: "POET",
       role: "平台级光子期权仓",
-      targetPct: 10,
       firstPct: 3,
       entryPrice: 12.29,
       status: "小仓等待 PO 转收入",
-      buyPlan: "只用 3% 买期权属性；若 PO 转 shipment/revenue，且价格站稳 20D/50D 后放量，再加到 6-8%。没有收入验证前不满仓。",
+      weightReason: "赔率像期权，但兑现还早；没有 PO 转收入前只给小仓，避免故事仓变主仓。",
+      buyPlan: "若 PO 转 shipment/revenue，且价格站稳 20D/50D 后放量，再考虑加仓。没有收入验证前不满仓。",
       sellPlan: "Lumilens PO 没有交付收入，或主客户选择非 Optical Interposer 路线，退出主题仓。",
     },
     {
       ticker: "AAOI",
       role: "光模块收入验证仓",
-      targetPct: 7,
       firstPct: 2,
       entryPrice: 158.41,
       status: "等 ATM 压力释放",
-      buyPlan: "ATM 压力大，只做 2% 观察；等股价重新站上 20D 且成交量缩到常态，或 LTA/AI optical revenue 上修，再补到 5-7%。",
+      weightReason: "收入验证有价值，但 ATM 稀释和客户集中压制赔率，先放最低观察仓。",
+      buyPlan: "等股价重新站上 20D 且成交量缩到常态，或 LTA/AI optical revenue 上修，再考虑补仓。",
       sellPlan: "ATM 持续压制且收入/毛利上修不够，或 LTA 没有落地，降低到 0-2%。",
     },
     {
       ticker: "MU",
       role: "HBM 财报验证趋势仓",
-      targetPct: 7,
       firstPct: 4,
       entryPrice: 971,
       status: "趋势持有，赔率约束",
-      buyPlan: "只在 20D/50D 回踩后低吸，不追财报长阳；若 HBM sold-out 与 FY EPS 继续上修，维持 5-7%。",
+      weightReason: "HBM 财报验证强且有大市值翻倍空间，但短线热度高，只给趋势仓并等回调。",
+      buyPlan: "只在 20D/50D 回踩后低吸，不追财报长阳；若 HBM sold-out 与 FY EPS 继续上修，维持趋势仓。",
       sellPlan: "毛利停止上修、库存回升，或 SK Hynix/Samsung 供给释放导致 HBM 价格预期松动，降到防守仓。",
     },
     {
       ticker: "XFAB",
       role: "低位反转观察仓",
-      targetPct: 8,
       firstPct: 3,
       entryPrice: 10.76,
       status: "等放量确认 AI 纯度",
-      buyPlan: "3% 低位观察；只有 WBG/Photonics 增速继续抵消传统业务下滑，且价格放量突破底部平台，才加到 6-8%。",
+      weightReason: "低位反转有赔率，但 AI 纯度和传统业务拖累还要验证，先给观察仓。",
+      buyPlan: "只有 WBG/Photonics 增速继续抵消传统业务下滑，且价格放量突破底部平台，才考虑加仓。",
       sellPlan: "AI 纯度无法提升，传统汽车/工业继续拖累，或营收连续两个季度无改善，移出组合。",
     },
     {
       ticker: "CAMT",
       role: "先进封装检测确定性仓",
-      targetPct: 12,
       firstPct: 5,
       entryPrice: 171.66,
       status: "等回踩确认",
-      buyPlan: "HBM 订单验证强，先 5%；等 20D/50D 回踩不破或新订单继续上修，再补到 9-12%。确定性高但赔率低于材料小票。",
+      weightReason: "HBM 检测确定性较高，但赔率低于材料小票，所以给中等仓位等订单继续上修。",
+      buyPlan: "等 20D/50D 回踩不破或新订单继续上修，再考虑补仓。确定性高但赔率低于材料小票。",
       sellPlan: "HBM 检测订单无法连续，AI revenue 占比下降，或估值扩张但订单不再上修，减到 4% 以下。",
     },
   ],
@@ -1020,6 +1021,7 @@ const portfolioPlan = {
 let weights = { ...baseWeights };
 let selectedTicker = null;
 let sortMode = "score";
+let activePage = "home";
 let activePool = "watch";
 let lastDailyRefresh = "06/01 18:31";
 let quoteSource = "embedded-eodhd";
@@ -1033,6 +1035,7 @@ const storageKeys = {
   events: "industrial-monitor.events.v1",
   decisions: "industrial-monitor.decisions.v1",
   stateWeights: "industrial-monitor.state-weights.v1",
+  executionDone: "industrial-monitor.execution-done.v1",
 };
 
 const embeddedQuoteFallbacks = [
@@ -1194,6 +1197,38 @@ function loadStateWeights() {
 
 function saveStateWeights() {
   setStoredJson(storageKeys.stateWeights, weights);
+}
+
+function weekKey(date = new Date()) {
+  const current = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const day = current.getUTCDay() || 7;
+  current.setUTCDate(current.getUTCDate() + 4 - day);
+  const yearStart = new Date(Date.UTC(current.getUTCFullYear(), 0, 1));
+  const week = Math.ceil(((current - yearStart) / 86400000 + 1) / 7);
+  return `${current.getUTCFullYear()}-W${String(week).padStart(2, "0")}`;
+}
+
+function executionDoneState() {
+  const stored = getStoredJson(storageKeys.executionDone);
+  const currentWeek = weekKey();
+  if (!stored || stored.week !== currentWeek || !Array.isArray(stored.tickers)) {
+    return { week: currentWeek, tickers: [] };
+  }
+  return stored;
+}
+
+function completedExecutionTickers() {
+  return new Set(executionDoneState().tickers);
+}
+
+function markExecutionDone(ticker) {
+  const state = executionDoneState();
+  if (!state.tickers.includes(ticker)) state.tickers.push(ticker);
+  setStoredJson(storageKeys.executionDone, state);
+}
+
+function resetExecutionQueue() {
+  setStoredJson(storageKeys.executionDone, { week: weekKey(), tickers: [] });
 }
 
 async function fetchJsonFile(path) {
@@ -1505,6 +1540,87 @@ function verificationMomentumNote(stock) {
   return "验证后市场反应接近或超过 1 倍，涨幅本身是质量验证，不直接扣分。";
 }
 
+function dateAgeDays(dateString) {
+  if (!dateString) return null;
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return null;
+  return Math.max(0, Math.floor((Date.now() - date.getTime()) / 86400000));
+}
+
+function stockUpdateDate(stock, type) {
+  const fundamentals = stock.fundamentals || {};
+  if (type === "fundamental") {
+    return fundamentals.updatedAt || fundamentals.consensusUpdatedAt || fundamentals.fundamentalsUpdatedAt || stock.fundamentalsUpdatedAt || stock.updatedAt || null;
+  }
+  return stock.metricsUpdatedAt || stock.coreMetricsUpdatedAt || stock.leadMetricsUpdatedAt || stock.updatedAt || null;
+}
+
+function formatUpdateAge(dateString) {
+  const age = dateAgeDays(dateString);
+  if (age === null) return "待补更新时间";
+  if (age === 0) return "今天更新";
+  return `${age} 天前更新`;
+}
+
+function renderActionTodos(stock) {
+  const todos = [];
+  const fundamentalUpdatedAt = stockUpdateDate(stock, "fundamental");
+  const metricsUpdatedAt = stockUpdateDate(stock, "metrics");
+  const fundamentalAge = dateAgeDays(fundamentalUpdatedAt);
+  const metricsAge = dateAgeDays(metricsUpdatedAt);
+
+  if (fundamentalAge === null) {
+    todos.push(["amber", "更新基本面", "缺少基本面更新时间，先补市值、未来 3 年利润、一致预期来源和行业估值口径。"]);
+  } else if (fundamentalAge >= 30) {
+    todos.push(["amber", "更新基本面", `基本面 ${formatUpdateAge(fundamentalUpdatedAt)}，需要复核市值、27/28/29E 利润和估值档。`]);
+  } else {
+    todos.push(["green", "基本面", `${formatUpdateAge(fundamentalUpdatedAt)}，本周只需关注是否有财报/指引新变化。`]);
+  }
+
+  if (metricsAge === null) {
+    todos.push(["amber", "跟踪核心指标", `缺少核心指标更新时间，先复核：${stock.leadMetric || "订单、backlog、收入、毛利和客户验证"}.`]);
+  } else if (metricsAge >= 30) {
+    todos.push(["amber", "跟踪核心指标", `核心指标 ${formatUpdateAge(metricsUpdatedAt)}，需要复核：${stock.leadMetric || "订单、backlog、收入、毛利和客户验证"}.`]);
+  } else {
+    todos.push(["green", "核心指标", `${formatUpdateAge(metricsUpdatedAt)}，继续盯：${stock.leadMetric || "订单、backlog、收入、毛利和客户验证"}.`]);
+  }
+
+  document.querySelector("#todoList").innerHTML = todos
+    .map(([level, title, text]) => `<div class="alert ${level}"><strong>${title}</strong><span>${text}</span></div>`)
+    .join("");
+}
+
+function renderWatchPoints(stock) {
+  const points = [];
+  const heat = sellHeatScore(stock);
+  const circleHeat = circleCrowdingScore(stock);
+  const gain = validationGain(stock);
+
+  if (circleHeat >= 75 || gain >= 500 || stock.month >= 120) {
+    points.push([
+      circleHeat >= 85 || gain >= 1000 ? "red" : "amber",
+      "拥挤风险",
+      `圈层热度 ${tierForScore(circleHeat, "emotion").label}，验证后 ${formatMove(gain)}，近一月 ${formatMove(stock.month)}；强标的仍可等回撤，但不要把拥挤误判成新赔率。`,
+    ]);
+  } else {
+    points.push(["green", "拥挤风险", `圈层热度 ${tierForScore(circleHeat, "emotion").label}，验证后 ${formatMove(gain)}；暂未出现必须先处理的拥挤卖点。`]);
+  }
+
+  if (heat >= 70 || sentimentClimaxSignal(stock)) {
+    points.push([
+      sentimentClimaxSignal(stock) || heat >= 88 ? "red" : "amber",
+      "情绪风险",
+      `真实热度 ${tierForScore(heat, "emotion").label}，官方覆盖 ${stock.sentiment.officialCoverage}，搜索 ${stock.sentiment.searchSpike}x；重点识别真全民皆知，而不是小圈层热。`,
+    ]);
+  } else {
+    points.push(["green", "情绪风险", `真实热度 ${tierForScore(heat, "emotion").label}，尚未达到官方报道 + 散户狂热的卖点。`]);
+  }
+
+  document.querySelector("#watchPoints").innerHTML = points
+    .map(([level, title, text]) => `<div class="alert ${level}"><strong>${title}</strong><span>${text}</span></div>`)
+    .join("");
+}
+
 function fundamentalSnapshot(stock) {
   const fundamentals = stock.fundamentals || {};
   const valuation = forwardValuationBand(stock);
@@ -1517,116 +1633,23 @@ function fundamentalSnapshot(stock) {
 }
 
 function parseUsdAmount(value) {
-  if (Number.isFinite(Number(value))) return Number(value);
-  const text = `${value || ""}`.replace(/,/g, "").trim();
-  if (!text || /待补|待更新|待核验|SEK|JPY|EUR|CHF/i.test(text)) return null;
-  const match = text.match(/-?\d+(?:\.\d+)?/);
-  if (!match) return null;
-  const number = Number(match[1]);
-  if (!Number.isFinite(number)) return null;
-  if (/万亿|trillion|T\b/i.test(text)) return number * 1e12;
-  if (/千亿/.test(text)) return number * 1e11;
-  if (/亿美元/.test(text)) return number * 1e8;
-  if (/\bB\b|billion/i.test(text)) return number * 1e9;
-  if (/\bM\b|million/i.test(text)) return number * 1e6;
-  return null;
+  return valuationLogic.parseUsdAmount(value);
 }
 
 function consensusProfitUsd(stock, year) {
-  const fundamentals = stock.fundamentals || {};
-  const consensus = fundamentals.consensusProfitUsd || fundamentals.forwardProfitUsd || {};
-  const aliases = {
-    1: [consensus.y1, consensus.year1, fundamentals.consensusProfitUsdY1, fundamentals.forwardNetIncomeUsdY1, fundamentals.netIncomeUsdY1],
-    2: [consensus.y2, consensus.year2, fundamentals.consensusProfitUsdY2, fundamentals.forwardNetIncomeUsdY2, fundamentals.netIncomeUsdY2],
-    3: [consensus.y3, consensus.year3, fundamentals.consensusProfitUsdY3, fundamentals.forwardNetIncomeUsdY3, fundamentals.netIncomeUsdY3],
-  };
-  for (const candidate of aliases[year]) {
-    const parsed = parseUsdAmount(candidate);
-    if (parsed) return parsed;
-  }
-  return null;
+  return valuationLogic.consensusProfitUsd(stock, year);
 }
 
 function formatUsdCompact(value) {
-  if (!Number.isFinite(Number(value))) return "待补";
-  if (value >= 1e12) return `${Number((value / 1e12).toFixed(2))}T`;
-  if (value >= 1e9) return `${Number((value / 1e9).toFixed(1))}B`;
-  if (value >= 1e8) return `${Number((value / 1e8).toFixed(1))}亿`;
-  if (value >= 1e6) return `${Number((value / 1e6).toFixed(1))}M`;
-  return `${Math.round(value).toLocaleString("en-US")}`;
+  return valuationLogic.formatUsdCompact(value);
 }
 
 function forwardValuationBand(stock) {
-  const marketCap = parseUsdAmount(stock.fundamentals?.marketCapUsd || stock.marketCap || stock.marketCapUsd);
-  const profits = [1, 2, 3].map((year) => consensusProfitUsd(stock, year));
-  const [y1, y2, y3] = profits;
-  const consensusText = y3 ? `Y3 ${formatUsdCompact(y3)}` : "";
-
-  if (!marketCap || !y1 || !y2 || !y3) {
-    return {
-      available: false,
-      label: "估值待补",
-      percentile: 0,
-      risk: 0,
-      consensusText,
-      note: "缺少市值或未来 1/2/3 年一致预期利润，暂不触发估值卖点。",
-    };
-  }
-
-  const ranges = [
-    { year: 1, low: y1 * 30, high: y1 * 40 },
-    { year: 2, low: y2 * 30, high: y2 * 40 },
-    { year: 3, low: y3 * 30, high: y3 * 40 },
-  ];
-
-  if (marketCap < ranges[0].low) {
-    return {
-      available: true,
-      label: "低估排查",
-      percentile: 10,
-      risk: 35,
-      consensusText,
-      note: "按第 1 年利润估值仍低，可能是低估，也可能是市场知道我们不知道的问题。",
-    };
-  }
-
-  for (const range of ranges) {
-    if (marketCap <= range.high) {
-      const inBand = clamp(((marketCap - range.low) / (range.high - range.low)) * 100, 0, 100);
-      const basePercentile = { 1: 20, 2: 50, 3: 80 }[range.year];
-      const label = { 1: "低估", 2: "合理", 3: "透支" }[range.year];
-      return {
-        available: true,
-        label,
-        percentile: Math.round(clamp(basePercentile + inBand * 0.18)),
-        risk: range.year === 3 ? 72 : range.year === 2 ? 40 : 24,
-        consensusText,
-        note:
-          range.year === 3
-            ? "当前市值已经交易到未来第 3 年 30-40 倍利润区间，属于估值透支区。"
-            : `当前市值主要交易到未来第 ${range.year} 年 30-40 倍利润区间，估值尚未透支到第 3 年。`,
-      };
-    }
-  }
-
-  return {
-    available: true,
-    label: "极端透支",
-    percentile: 100,
-    risk: 95,
-    consensusText,
-    note: "当前市值已经超过未来第 3 年 40 倍利润，属于明确估值卖出信号。",
-  };
+  return valuationLogic.forwardValuationBand(stock);
 }
 
 function valuationTier(stock) {
-  const valuation = forwardValuationBand(stock);
-  if (!valuation.available) return { label: "待补", className: "tier-2", width: 35, note: valuation.note };
-  if (valuation.risk >= 90) return { label: "极端透支", className: "tier-1", width: 100, note: valuation.note };
-  if (valuation.risk >= 72) return { label: "透支", className: "tier-2", width: 82, note: valuation.note };
-  if (valuation.risk >= 40) return { label: "合理", className: "tier-3", width: 58, note: valuation.note };
-  if (valuation.percentile <= 15) return { label: "低估排查", className: "tier-3", width: 42, note: valuation.note };
-  return { label: "低估", className: "tier-4", width: 28, note: valuation.note };
+  return valuationLogic.valuationTier(stock);
 }
 
 function valuationOverdrawRiskScore(stock) {
@@ -2088,16 +2111,12 @@ function poolCandidates() {
 }
 
 function updatePoolChrome() {
-  const titles = {
-    watch: "自选股票",
-    discovery: "发现池",
-    validation: "验证池",
-  };
+  document.querySelector("#watchTitle").textContent = "自选股票";
 
-  document.querySelector("#watchTitle").textContent = titles[activePool];
-  document.querySelector("#watchPoolCount").textContent = stocks.length;
-  document.querySelector("#discoveryPoolCount").textContent = discoveryPool.length;
-  document.querySelector("#validationPoolCount").textContent = validationPool.length;
+  const discoveryCount = document.querySelector("#discoveryPoolCount");
+  const validationCount = document.querySelector("#validationPoolCount");
+  if (discoveryCount) discoveryCount.textContent = discoveryPool.length;
+  if (validationCount) validationCount.textContent = validationPool.length;
 
   document.querySelectorAll(".pool-tab").forEach((button) => {
     button.classList.toggle("active", button.dataset.pool === activePool);
@@ -2105,10 +2124,20 @@ function updatePoolChrome() {
 }
 
 function renderPoolHead() {
-  const headers =
-    activePool === "watch"
-      ? ["股票", "行业/领域", "基本面快照", "价格快照", "验证入池/涨幅", "基本档", "兑现档", "估值档", "赔率档", "风险档", "情绪档", "状态"]
-      : ["股票", "国家/交易所", "行业/领域", "美元口径", "发现/验证线索", "核心追踪指标", "下一步", "操作"];
+  const headers = [
+    "股票",
+    "行业/领域",
+    "基本面快照",
+    "价格快照",
+    "验证入池/涨幅",
+    "基本档",
+    "兑现档",
+    "估值档",
+    "赔率档",
+    "风险档",
+    "情绪档",
+    "状态",
+  ];
 
   document.querySelector("#poolHeadRow").innerHTML = headers.map((header) => `<th>${header}</th>`).join("");
 }
@@ -2229,14 +2258,69 @@ function renderCandidateRows() {
   });
 }
 
+function renderCandidateCards(containerSelector, candidates, evidenceLabel) {
+  const container = document.querySelector(containerSelector);
+  if (!container) return;
+
+  container.innerHTML = candidates
+    .map((candidate) => {
+      const added = candidateAlreadyAdded(candidate);
+      return `
+        <article class="candidate-card">
+          <div class="candidate-card-head">
+            <div>
+              <strong>${candidate.name}</strong>
+              <span>${candidate.symbol} · ${candidate.country} · ${candidate.exchange}</span>
+            </div>
+            <span class="theme-tag">${candidate.stage}</span>
+          </div>
+          <div class="candidate-card-body">
+            <div>
+              <span>行业/领域</span>
+              <strong>${candidate.industry}</strong>
+              <p>${candidate.theme}</p>
+            </div>
+            <div>
+              <span>美元口径</span>
+              <strong>${candidate.marketCapUsd}</strong>
+              <p>收入 ${candidate.revenueUsd} · 盈利 ${candidate.profitUsd}</p>
+            </div>
+            <div>
+              <span>${evidenceLabel}</span>
+              <strong>${candidate.leadMetric}</strong>
+              <p>${candidate.evidence}</p>
+            </div>
+            <div>
+              <span>下一步</span>
+              <strong>${candidate.nextCheck}</strong>
+            </div>
+          </div>
+          <button class="add-watch-button" type="button" data-add-symbol="${candidate.symbol}" ${added ? "disabled" : ""}>
+            ${added ? "已加入" : "加入自选"}
+          </button>
+        </article>
+      `;
+    })
+    .join("");
+}
+
+function renderDiscoveryPage() {
+  renderCandidateCards("#discoveryCards", discoveryPool, "发现线索");
+  renderCandidateCards("#validationCards", validationPool, "验证线索");
+  updatePoolChrome();
+
+  document.querySelectorAll("[data-add-symbol]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      addCandidateToWatchlist(button.dataset.addSymbol);
+    });
+  });
+}
+
 function renderRows() {
+  activePool = "watch";
   updatePoolChrome();
   renderPoolHead();
-
-  if (activePool !== "watch") {
-    renderCandidateRows();
-    return;
-  }
 
   document.querySelector("#watchRows").innerHTML = sortedStocks()
     .map((stock) => {
@@ -2356,6 +2440,8 @@ function renderDetails(stock) {
 
   renderScoreBreakdown(stock);
   renderRiskTriggers(stock);
+  renderActionTodos(stock);
+  renderWatchPoints(stock);
 
   document.querySelector("#leadMetrics").innerHTML = stock.metrics
     .map((metric) => {
@@ -2398,19 +2484,58 @@ function renderDetails(stock) {
 function renderScoreBreakdown(stock) {
   const valuation = forwardValuationBand(stock);
   const stockValuationTier = valuationTier(stock);
+  const fundamentalTier = tierForScore(fundamentalScore(stock), "fundamental");
+  const demandTier = tierForScore(demandProbabilityScore(stock), "demand");
+  const oddsTier = tierForScore(oddsScore(stock), "odds");
+  const riskTier = tierForScore(riskScore(stock), "risk");
+  const emotionTier = tierForScore(sellHeatScore(stock), "emotion");
+  const gain = validationGain(stock);
+  const unknownRisk = unknownInformationRiskScore(stock);
+  const validationTrigger = stock.validation?.trigger || "缺验证触发事件";
+  const leadMetric = stock.leadMetric || "核心指标待补";
   const rows = [
-    { label: "基本档", value: fundamentalScore(stock), note: "行业 Beta / 错配 / 弹性 / 稀缺价值链", type: "fundamental" },
-    { label: "兑现档", value: demandProbabilityScore(stock), note: "领先指标能否进入财报", type: "demand" },
+    {
+      label: "基本档",
+      value: fundamentalScore(stock),
+      note: `${stock.industry}/${stock.theme}；看时代 Beta、稀缺环节和收入弹性是否足够强。`,
+      type: "fundamental",
+      display: fundamentalTier.label,
+    },
+    {
+      label: "兑现档",
+      value: demandProbabilityScore(stock),
+      note: `${validationTrigger}；本周跟踪 ${leadMetric}。`,
+      type: "demand",
+      display: demandTier.label,
+    },
     {
       label: "估值档",
       value: valuation.available ? valuation.percentile : 0,
-      note: valuation.note,
+      note: valuation.available ? valuation.note : "缺市值或未来 3 年一致预期，不能判断是否透支。",
       type: valuation.available ? "risk" : "normal",
       display: valuation.available ? `${stockValuationTier.label} · ${valuation.percentile}%` : "待补",
     },
-    { label: "赔率档", value: oddsScore(stock), note: "时间/空间/概率：1 年翻倍、1 年多倍或 1-3 年翻倍", type: "odds" },
-    { label: "风险档", value: riskScore(stock), note: `硬风险 + 未知风险。${verificationMomentumNote(stock)}`, type: "risk" },
-    { label: "情绪档", value: sellHeatScore(stock), note: "官方报道、搜索、散户入场和标的覆盖面的全民化程度", type: "emotion" },
+    {
+      label: "赔率档",
+      value: oddsScore(stock),
+      note: compactOddsExplanation(stock, { gain, valuation: stockValuationTier, unknownRisk }),
+      type: "odds",
+      display: oddsTier.label,
+    },
+    {
+      label: "风险档",
+      value: riskScore(stock),
+      note: compactRiskExplanation(stock),
+      type: "risk",
+      display: riskTier.label,
+    },
+    {
+      label: "情绪档",
+      value: sellHeatScore(stock),
+      note: compactSentimentExplanation(stock),
+      type: "emotion",
+      display: emotionTier.label,
+    },
   ];
 
   document.querySelector("#scoreBreakdown").innerHTML = rows
@@ -2425,6 +2550,78 @@ function renderScoreBreakdown(stock) {
       `;
     })
     .join("");
+}
+
+function compactOddsExplanation(stock, context) {
+  const { gain, valuation, unknownRisk } = context;
+  if (stock.ticker === "MU") {
+    return `可比分析支持大市值翻倍空间；验证后 ${formatMove(gain)}，估值档 ${valuation.label}。`;
+  }
+  if (gain >= 90) {
+    return `市场已验证，验证后 ${formatMove(gain)}；只要估值未透支，回调仍有赔率。`;
+  }
+  if (unknownRisk >= 55) {
+    return `验证后涨幅偏弱，先排查未知信息；估值档 ${valuation.label}。`;
+  }
+  return `空间看 ${stock.theme}，速度看 ${stock.leadMetric || "核心指标"}，估值档 ${valuation.label}。`;
+}
+
+function oddsExplanation(stock, context) {
+  const { gain, valuation, unknownRisk } = context;
+  const parts = [
+    `空间：${stock.theme} 属于 ${stock.industry} 的瓶颈方向，先看行业空间和公司在链条里的稀缺度。`,
+    `时间：${stock.leadMetric || "核心指标待补"} 决定重估速度。`,
+    `市场验证：验证后 ${formatMove(gain)}，${gain >= 90 ? "涨幅本身说明资金认可" : "涨幅偏弱，需要排查市场不买账的原因"}.`,
+    `上限：估值档 ${valuation.label}${unknownRisk >= 55 ? "；未知信息风险偏高，赔率先打折" : ""}.`,
+  ];
+
+  if (stock.ticker === "MU") {
+    parts.unshift("可比分析：按 HBM/存储三巨头对标 NVIDIA 级别生态，MU 仍可能有大市值主线翻倍空间。");
+  }
+
+  return parts.join(" ");
+}
+
+function compactRiskExplanation(stock) {
+  const highRisks = Object.entries(stock.risk || {})
+    .filter(([, value]) => value >= 60)
+    .map(([key]) => riskLabel(key));
+  if (highRisks.length) return `主要风险：${highRisks.join(" / ")}；看是否触发公司专属红线。`;
+  return `硬风险暂未高危；继续看验证节奏和估值是否跑太快。`;
+}
+
+function riskExplanation(stock) {
+  const highRisks = Object.entries(stock.risk || {})
+    .filter(([, value]) => value >= 60)
+    .map(([key, value]) => `${riskLabel(key)} ${value}`);
+  const unknown = unknownInformationRiskScore(stock);
+  const unknownText = unknown >= 55 ? `未知风险 ${unknown}：${verificationMomentumNote(stock)}` : verificationMomentumNote(stock);
+  return `${highRisks.length ? `高风险项：${highRisks.join(" / ")}。` : "公司专属硬风险暂未触发高危项。"} ${unknownText}`;
+}
+
+function riskLabel(key) {
+  const labels = {
+    dilution: "稀释",
+    execution: "执行",
+    valuation: "估值",
+    export: "出口",
+    customer: "客户",
+  };
+  return labels[key] || key;
+}
+
+function sentimentExplanation(stock) {
+  const heat = sellHeatScore(stock);
+  const circle = circleCrowdingScore(stock);
+  return `真实热度 ${tierForScore(heat, "emotion").label}，圈层热度 ${tierForScore(circle, "emotion").label}；官方覆盖 ${stock.sentiment.officialCoverage}，搜索 ${stock.sentiment.searchSpike}x，报道涨幅 ${stock.sentiment.reportedMultiple}x。小票先区分圈层拥挤和真正全民皆知。`;
+}
+
+function compactSentimentExplanation(stock) {
+  const massHeat = sellHeatScore(stock);
+  const circleHeat = circleCrowdingScore(stock);
+  if (massHeat >= 80) return "官方/主流报道和散户热度都升温，优先当卖点风险处理。";
+  if (circleHeat >= 75) return "圈层拥挤明显，但还不是全民皆知，重点看回撤和新增验证。";
+  return "暂未进入真正全民狂热，情绪不是当前主要卖点。";
 }
 
 function renderRiskTriggers(stock) {
@@ -2528,7 +2725,6 @@ function portfolioStats() {
     .map((position) => ({ ...position, stock: stockForTicker(position.ticker) }))
     .filter((position) => position.stock);
 
-  const targetExposure = positions.reduce((sum, position) => sum + position.targetPct, 0);
   const modelExposure = positions.reduce((sum, position) => sum + position.firstPct, 0);
   const invested = (portfolioPlan.capital * modelExposure) / 100;
 
@@ -2547,7 +2743,6 @@ function portfolioStats() {
 
   return {
     positions,
-    targetExposure,
     modelExposure,
     targetCash: portfolioPlan.targetCashPct,
     triggerCash: 100 - modelExposure,
@@ -2623,15 +2818,19 @@ function technicalStatus(stock) {
   return { level: "amber", label: "等待日线", text: "接入 EODHD 日线后自动显示 RSI、20D/50D 和量能比。" };
 }
 
+function positionWeightReason(position) {
+  return position.weightReason || position.status || "仓位由兑现强度、赔率、估值和风险共同决定。";
+}
+
 function renderPortfolio() {
   const stats = portfolioStats();
   const pnlText = formatSignedPct(stats.pnlOnCapital);
-  const mini = document.querySelector("#openPortfolio");
+  const hero = document.querySelector("#portfolioHero");
   const curve = document.querySelector("#portfolioCurve");
 
   document.querySelector("#portfolioPnl").textContent = pnlText;
-  mini.classList.toggle("loss", stats.pnlOnCapital < 0);
-  mini.classList.toggle("gain", stats.pnlOnCapital > 0);
+  hero.classList.toggle("loss", stats.pnlOnCapital < 0);
+  hero.classList.toggle("gain", stats.pnlOnCapital > 0);
   if (curve) {
     curve.setAttribute("points", sparklinePoints([...portfolioPlan.pnlSeries, stats.pnlOnCapital]));
   }
@@ -2644,12 +2843,53 @@ function renderPortfolio() {
 
   const summary = [
     ["启动资金", formatCurrency(portfolioPlan.capital)],
-    ["目标投入", `${stats.targetExposure}% · ${formatCurrency((portfolioPlan.capital * stats.targetExposure) / 100)}`],
-    ["当前模型仓", `${stats.modelExposure}% · ${formatCurrency(stats.invested)}`],
-    ["待触发现金", `${stats.triggerCash}% · ${formatCurrency((portfolioPlan.capital * stats.triggerCash) / 100)}`],
+    ["组合仓位", `${stats.modelExposure}% · ${formatCurrency(stats.invested)}`],
+    ["现金等待", `${stats.triggerCash}% · ${formatCurrency((portfolioPlan.capital * stats.triggerCash) / 100)}`],
     ["总资金盈亏", `${pnlText} · ${formatCurrency(stats.profit)}`],
     ["持仓盈亏", formatSignedPct(stats.pnlOnInvested)],
   ];
+
+  document.querySelector("#portfolioHomeSummary").innerHTML = summary
+    .slice(0, 4)
+    .map(
+      ([label, value]) => `
+        <div>
+          <span>${label}</span>
+          <strong>${value}</strong>
+        </div>
+      `
+    )
+    .join("");
+
+  document.querySelector("#portfolioHomePositions").innerHTML = stats.positions
+    .slice(0, 6)
+    .map((position) => {
+      const stock = position.stock;
+      const action = actionForStock(stock);
+      const tech = technicalStatus(stock);
+      return `
+        <button class="portfolio-position-card" type="button" data-portfolio-ticker="${position.ticker}">
+          <div>
+            <strong>${position.ticker}</strong>
+            <span>${position.role}</span>
+          </div>
+          <div>
+            <strong>${position.firstPct}%</strong>
+            <span>${positionWeightReason(position)}</span>
+          </div>
+        </button>
+      `;
+    })
+    .join("");
+
+  document.querySelectorAll("[data-portfolio-ticker]").forEach((button) => {
+    button.addEventListener("click", () => {
+      selectedTicker = button.dataset.portfolioTicker;
+      activePool = "watch";
+      render();
+      openDrawer();
+    });
+  });
 
   document.querySelector("#portfolioSummary").innerHTML = summary
     .map(
@@ -2687,14 +2927,14 @@ function renderPortfolio() {
           </td>
           <td>
             <div class="allocation-stack">
-              <strong>${position.targetPct}% · ${formatCurrency((portfolioPlan.capital * position.targetPct) / 100)}</strong>
-              <span>目标仓位</span>
+              <strong>${position.firstPct}% · ${formatCurrency((portfolioPlan.capital * position.firstPct) / 100)}</strong>
+              <span>${position.status}</span>
             </div>
           </td>
           <td>
             <div class="allocation-stack">
-              <strong>${position.firstPct}% · ${formatCurrency((portfolioPlan.capital * position.firstPct) / 100)}</strong>
-              <span>${position.status}</span>
+              <strong>仓位理由</strong>
+              <span>${positionWeightReason(position)}</span>
             </div>
           </td>
           <td>
@@ -2716,26 +2956,7 @@ function renderPortfolio() {
 }
 
 function renderSummary() {
-  const redCount = stocks.filter((stock) => lightForStock(stock) === "red").length;
-  const heatCount = stocks.filter((stock) => sellHeatScore(stock) >= 80).length;
-  const greenCount = stocks.filter((stock) => lightForStock(stock) === "green").length;
-  const global = document.querySelector("#globalSignal");
-
-  document.querySelector("#stockCount").textContent = stocks.length;
-  document.querySelector("#redCount").textContent = redCount;
-  document.querySelector("#heatCount").textContent = heatCount;
   document.querySelector("#lastRefresh").textContent = `最近更新：${lastDailyRefresh} · ${quoteSource}`;
-
-  if (redCount >= 3) {
-    global.textContent = "拥挤";
-    global.className = "status-chip red";
-  } else if (greenCount >= 4) {
-    global.textContent = "可跟踪";
-    global.className = "status-chip green";
-  } else {
-    global.textContent = "分化";
-    global.className = "status-chip amber";
-  }
 }
 
 function executionQueueForStock(stock) {
@@ -2755,7 +2976,8 @@ function executionQueueForStock(stock) {
       priority: 1,
       tag: valuationSellSignal(stock) ? "估值卖点" : sentimentClimaxSignal(stock) ? "狂热见顶" : "红灯处理",
       className: "queue-red",
-      note: action.reason,
+      why: action.reason,
+      task: "先处理卖出/降仓信号，确认是否触发公司红线或情绪见顶。",
     };
   }
 
@@ -2764,7 +2986,8 @@ function executionQueueForStock(stock) {
       priority: 2,
       tag: "估值透支",
       className: "queue-amber",
-      note: valuation.note,
+      why: valuation.note,
+      task: "核对未来 3 年一致预期和行业估值分位，决定是否减仓或只保留观察仓。",
     };
   }
 
@@ -2773,7 +2996,8 @@ function executionQueueForStock(stock) {
       priority: 3,
       tag: "主线持仓",
       className: "queue-blue",
-      note: "大市值主线仍有翻倍赔率，热度只限制追高，不直接否定新增价值。",
+      why: "大市值主线仍有翻倍赔率，热度只限制追高，不直接否定新增价值。",
+      task: "持有为主，只在 20D/50D 回踩或盈利预期继续上修时再考虑加。",
     };
   }
 
@@ -2782,7 +3006,8 @@ function executionQueueForStock(stock) {
       priority: 4,
       tag: "蹲回调",
       className: "queue-blue",
-      note: "市场验证过的强标的，不因涨幅大直接降级；等待技术回撤和热度冷却。",
+      why: "市场验证过的强标的，不因涨幅大直接降级；等待技术回撤和热度冷却。",
+      task: "只蹲回调，不追长阳；回撤到支撑并且核心指标没变坏再处理。",
     };
   }
 
@@ -2791,7 +3016,8 @@ function executionQueueForStock(stock) {
       priority: 5,
       tag: "加仓候选",
       className: "queue-green",
-      note: action.reason,
+      why: action.reason,
+      task: "确认技术面和最新验证指标，满足条件才加仓。",
     };
   }
 
@@ -2800,7 +3026,8 @@ function executionQueueForStock(stock) {
       priority: 6,
       tag: "反常识排查",
       className: "queue-amber",
-      note: "极佳公司验证后 1 个月没接近翻倍，不买；先查市场不买账的未知信息。",
+      why: "极佳公司验证后 1 个月没接近翻倍，不买；先查市场不买账的未知信息。",
+      task: "排查客户、订单质量、融资、竞争替代和收入确认节奏。",
     };
   }
 
@@ -2809,7 +3036,8 @@ function executionQueueForStock(stock) {
       priority: 7,
       tag: "圈层拥挤",
       className: "queue-amber",
-      note: "小圈层热度高但还不是全民皆知，跟踪回撤和新增验证。",
+      why: "小圈层热度高但还不是全民皆知，跟踪回撤和新增验证。",
+      task: "看是否出现官方媒体和散户狂热；没有就主要等回撤。",
     };
   }
 
@@ -2817,11 +3045,13 @@ function executionQueueForStock(stock) {
     priority: 8,
     tag: "持续跟踪",
     className: "queue-blue",
-    note: action.reason,
+    why: action.reason,
+    task: "本周只更新核心指标和风险变化，暂不主动交易。",
   };
 }
 
 function renderExecutionQueue() {
+  const completed = completedExecutionTickers();
   const queue = stocks
     .map((stock) => ({
       stock,
@@ -2832,32 +3062,43 @@ function renderExecutionQueue() {
       unknownRisk: unknownInformationRiskScore(stock),
       gain: validationGain(stock),
     }))
+    .filter((item) => !completed.has(item.stock.ticker))
     .sort((a, b) => {
       if (a.queue.priority !== b.queue.priority) return a.queue.priority - b.queue.priority;
       if (a.queue.priority === 4) return b.unknownRisk - a.unknownRisk;
       if (a.queue.priority === 1) return b.heat - a.heat;
       return b.value - a.value;
     })
-    .slice(0, 8);
+    .slice(0, 4);
 
-  document.querySelector("#executionQueue").innerHTML = queue
-    .map(
-      (item) => `
+  document.querySelector("#executionQueue").innerHTML = queue.length
+    ? queue
+        .map(
+          (item) => `
         <button class="execution-card" type="button" data-queue-ticker="${item.stock.ticker}">
           <div class="execution-card-top">
             <strong>${item.stock.ticker}</strong>
             <span class="queue-tag ${item.queue.className}">${item.queue.tag}</span>
           </div>
           <p>${item.stock.name} · ${item.stock.theme}</p>
-          <p>${item.queue.note}</p>
+          <div class="execution-task">
+            <span>为什么排这里</span>
+            <p>${item.queue.why}</p>
+          </div>
+          <div class="execution-task">
+            <span>现在要做什么</span>
+            <p>${item.queue.task}</p>
+          </div>
           <div class="execution-card-meta">
             <span class="score-pill ${tierForScore(item.value, "odds").className}">${tierForScore(item.value, "odds").label}</span>
             <span class="company">验证后 ${formatMove(item.gain)}</span>
           </div>
+          <span class="queue-done-button" role="button" tabindex="0" data-complete-queue="${item.stock.ticker}">处理完成</span>
         </button>
       `
-    )
-    .join("");
+        )
+        .join("")
+    : `<div class="empty-queue">本周执行队列已处理完。</div>`;
 
   document.querySelectorAll("[data-queue-ticker]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -2865,6 +3106,14 @@ function renderExecutionQueue() {
       activePool = "watch";
       render();
       openDrawer();
+    });
+  });
+
+  document.querySelectorAll("[data-complete-queue]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      markExecutionDone(button.dataset.completeQueue);
+      renderExecutionQueue();
     });
   });
 }
@@ -2893,6 +3142,22 @@ function closeModal(id) {
   if (!modal) return;
   modal.classList.remove("open");
   modal.setAttribute("aria-hidden", "true");
+}
+
+function setActivePage(page) {
+  activePage = page;
+  document.querySelectorAll("[data-page]").forEach((panel) => {
+    const isActive = panel.dataset.page === page;
+    panel.classList.toggle("active", isActive);
+    panel.hidden = !isActive;
+  });
+  document.querySelectorAll("[data-page-target]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.pageTarget === page);
+  });
+  if (page === "discovery") {
+    closeDrawer();
+    renderDiscoveryPage();
+  }
 }
 
 async function loadDailyQuotes() {
@@ -2973,12 +3238,19 @@ function render() {
   renderSummary();
   renderPortfolio();
   renderExecutionQueue();
+  renderDiscoveryPage();
 }
 
 document.querySelector("#sortMode").addEventListener("change", (event) => {
   sortMode = event.target.value;
   activePool = "watch";
   renderRows();
+});
+
+document.querySelectorAll("[data-page-target]").forEach((button) => {
+  button.addEventListener("click", () => {
+    setActivePage(button.dataset.pageTarget);
+  });
 });
 
 document.querySelectorAll(".pool-tab").forEach((button) => {
@@ -2994,6 +3266,11 @@ document.querySelector("#resetWeights").addEventListener("click", () => {
   saveStateWeights();
   renderFactorControls();
   render();
+});
+
+document.querySelector("#resetExecutionQueue").addEventListener("click", () => {
+  resetExecutionQueue();
+  renderExecutionQueue();
 });
 
 document.querySelector("#openFramework").addEventListener("click", () => openModal("frameworkModal"));

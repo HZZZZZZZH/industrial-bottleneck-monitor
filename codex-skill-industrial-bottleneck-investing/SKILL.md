@@ -192,6 +192,8 @@ The project is a static dashboard deployed to Netlify. It has:
 - watchlist, discovery pool, validation pool
 - portfolio box for a 100,000 USD simulated allocation
 - six visible tiers: `基本档`, `兑现档`, `估值档`, `赔率档`, `风险档`, `情绪档`
+- detail pages prioritize `警报`, `我需要做的事情`, and `我需要关注的点` before score explanation or long research logic
+- execution queue shows only 4 cards at a time; completed cards hide for the current week and the next item automatically appears
 - verification date, anchor price, and post-verification return
 - manual price-anchor overrides
 - sample EODHD daily quote fetching
@@ -207,7 +209,9 @@ When editing the project:
 4. Validate data after edits with `node scripts/validate-data.mjs` if available.
 5. For derived price changes, run `node scripts/sync-price-derived-data.mjs` if relevant.
 6. Visually verify meaningful UI changes in a browser when practical.
-7. Deploy to Netlify after user-facing changes when requested.
+7. For every completed user-facing change, commit and push to GitHub `main` by default.
+8. Deploy to Netlify production by default after the GitHub push.
+9. Verify a changed live asset directly before saying the site updated.
 
 ## Deployment Notes
 
@@ -218,6 +222,12 @@ Netlify is already configured and the current live site is:
 GitHub is:
 
 `https://github.com/HZZZZZZZH/industrial-bottleneck-monitor`
+
+Current sync preference:
+
+- The user wants every completed project change synchronized to both GitHub and Netlify.
+- Do not stop at local changes unless the user explicitly says not to sync.
+- If the working directory is not a complete GitHub worktree, copy the finished changes into the canonical repo at `/Users/uaer/Documents/Codex/2026-05-29/twitter`, then commit, push, deploy, and verify.
 
 If pushing to GitHub requires credentials, ask the user for a short-lived fine-grained PAT with only repository `Contents: Read and write`. Never store the token in git config, `.env`, remote URLs, source files, or logs intended for the user. Recommend revoking it after push.
 

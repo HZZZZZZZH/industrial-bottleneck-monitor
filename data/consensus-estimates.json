@@ -1,13 +1,13 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-02T03:10:00.000Z",
+  "updatedAt": "2026-06-02T10:18:00.000Z",
   "cadence": "monthly",
   "baseYear": 2026,
   "notes": "Monthly consensus estimate file. Y1/Y2/Y3 map to 2027/2028/2029 for baseYear 2026. Use analyst consensus net income when available; otherwise convert consensus EPS by diluted shares and document the source.",
   "items": [
     {
       "ticker": "AXTI",
-      "marketCapUsd": "约 90 亿美元",
+      "marketCapUsd": "~$7.0B",
       "consensusProfitUsdY1": "~$49M",
       "consensusProfitUsdY2": null,
       "consensusProfitUsdY3": null,
@@ -16,92 +16,89 @@
         "https://stockanalysis.com/stocks/axti/forecast/",
         "https://stockanalysis.com/stocks/axti/statistics/"
       ],
-      "note": "公开页显示 2027E EPS avg 约 $0.77，股份数约 63.66M；换算 profit = 0.77 * 63.66M ≈ $49M。2028/2029 未公开。"
+      "note": "StockAnalysis public page shows 2027 EPS avg about $0.77 and 63.66M shares outstanding; converted Y1 profit is about $49M. 2028/2029 public consensus profit is not visible on the free page."
     },
     {
       "ticker": "SIVE",
-      "marketCapUsd": "约 20B+ SEK",
-      "consensusProfitUsdY1": "~-$0.8M",
-      "consensusProfitUsdY2": "~$3.7M",
+      "marketCapUsd": "~$1.9B",
+      "consensusProfitUsdY1": "~-$1.4M",
+      "consensusProfitUsdY2": "~$6.0M",
       "consensusProfitUsdY3": null,
       "sourceQuality": "low",
       "sourceUrls": [
-        "https://www.marketscreener.com/quote/stock/SIVERS-SEMICONDUCTORS-AB-61747388/finances/",
-        "https://res.cloudinary.com/redeye/image/upload/v1772172548/article-pdfs/update/sivers-semiconductors-q4-review-positioned-for-a-2026-inflection_pkqat3.pdf",
-        "https://stockanalysis.com/quote/sto/SIVE/statistics/"
+        "https://stockanalysis.com/quote/sto/SIVE/statistics/",
+        "https://res.cloudinary.com/redeye/image/upload/v1761545570/article-pdfs/update/sivers-semiconductors-q3-review-consistent-steps-toward-a-stronger-business_xhpzgx.pdf"
       ],
-      "note": "MarketScreener 摘要给 2027E net income 约 -8M SEK；Redeye 单家研究给 2028E net income 约 37M SEK。按粗略 10 SEK/USD 换算。不是高质量 consensus。"
+      "note": "No current public multi-analyst consensus net income page was accessible. Fallback is Redeye single-analyst estimates: 2027e net income about -13M SEK and 2028e about 56M SEK, converted at roughly 0.107 USD/SEK from recent SEK/USD public quotes. Keep low confidence and leave 2029 null."
     },
     {
       "ticker": "POET",
-      "marketCapUsd": "约数十亿美元",
-      "consensusProfitUsdY1": "~-$5M",
+      "marketCapUsd": "~$2.4B",
+      "consensusProfitUsdY1": "~-$7M",
       "consensusProfitUsdY2": null,
       "consensusProfitUsdY3": null,
-      "sourceQuality": "low",
+      "sourceQuality": "medium",
       "sourceUrls": [
-        "https://stockanalysis.com/stocks/poet/forecast/",
+        "https://www.marketscreener.com/quote/stock/POET-TECHNOLOGIES-INC-50917815/finances/",
         "https://stockanalysis.com/stocks/poet/statistics/"
       ],
-      "note": "公开页显示 2027E EPS avg 约 -$0.03，股份数约 172.60M；换算约 -$5M。覆盖分析师少，且股份一年增幅很大，EPS 到利润换算不稳。"
+      "note": "MarketScreener public estimates page shows 2027 net income about -$6.959M. Public 2028/2029 net income consensus was not visible without paid access, so those remain null."
     },
     {
       "ticker": "VECO",
-      "marketCapUsd": "约 35 亿美元",
-      "consensusProfitUsdY1": "~$203M",
+      "marketCapUsd": "~$3.5B",
+      "consensusProfitUsdY1": "~$138M",
       "consensusProfitUsdY2": null,
       "consensusProfitUsdY3": null,
       "sourceQuality": "medium",
       "sourceUrls": [
-        "https://stockanalysis.com/stocks/veco/forecast/",
+        "https://www.marketscreener.com/quote/stock/VEECO-INSTRUMENTS-INC-11276/finances/",
         "https://stockanalysis.com/stocks/veco/statistics/"
       ],
-      "note": "公开页显示 2027E EPS avg 约 $3.33，股份数约 61.03M；换算 profit ≈ $203M。2028/2029 未公开。"
+      "note": "MarketScreener public estimates page shows 2027 net income about $137.5M. No public 2028/2029 net income consensus was visible on the free page."
     },
     {
       "ticker": "AAOI",
-      "marketCapUsd": "约百亿美元级",
-      "consensusProfitUsdY1": "~$391M",
+      "marketCapUsd": "~$14.9B",
+      "consensusProfitUsdY1": "~$381M",
       "consensusProfitUsdY2": null,
       "consensusProfitUsdY3": null,
       "sourceQuality": "medium",
       "sourceUrls": [
-        "https://stockanalysis.com/stocks/aaoi/forecast/",
+        "https://www.marketscreener.com/quote/stock/APPLIED-OPTOELECTRONICS-I-40449762/finances/",
         "https://stockanalysis.com/stocks/aaoi/statistics/"
       ],
-      "note": "公开页显示 2027E EPS avg 约 $4.87，股份数约 80.24M；换算 profit ≈ $391M。注意股份一年增加约 50%，月度更新必须重算股份数。"
+      "note": "MarketScreener public estimates page shows 2027 net income about $381.4M. 2028/2029 public net income consensus was not visible without paid access."
     },
     {
       "ticker": "MU",
-      "marketCapUsd": "约 1T 美元",
+      "marketCapUsd": "~$1.17T",
       "consensusProfitUsdY1": "~$48.7B",
       "consensusProfitUsdY2": "~$55.5B",
       "consensusProfitUsdY3": null,
       "sourceQuality": "medium",
       "sourceUrls": [
         "https://businessquant.com/stocks/mu/estimates/",
-        "https://stockanalysis.com/stocks/mu/statistics/",
-        "https://stockanalysis.com/stocks/mu/forecast/"
+        "https://stockanalysis.com/stocks/mu/statistics/"
       ],
-      "note": "BusinessQuant 公开页显示 annual EPS consensus：2027 约 $43.08，2028 约 $49.11；股份数约 1.13B。2029 公开页没有稳定 consensus EPS；单家/转述不放主字段。"
+      "note": "BusinessQuant public annual EPS consensus shows 2027 about $43.08 and 2028 about $49.11; StockAnalysis shows 1.13B shares outstanding, implying about $48.7B and $55.5B profit. 2029 public EPS consensus was not visible on the free page."
     },
     {
       "ticker": "XFAB",
-      "marketCapUsd": "约 15 亿美元",
-      "consensusProfitUsdY1": "~$120M",
-      "consensusProfitUsdY2": null,
+      "marketCapUsd": "~$1.2B",
+      "consensusProfitUsdY1": "~$43M",
+      "consensusProfitUsdY2": "~$64M",
       "consensusProfitUsdY3": null,
-      "sourceQuality": "low",
+      "sourceQuality": "medium",
       "sourceUrls": [
-        "https://www.boursier.com/actions/consensus/x-fab-BE0974310428%2CFR.html",
-        "https://stockanalysis.com/quote/epa/XFAB/statistics/",
-        "https://www.businesswire.com/news/home/20241203964849/en/X-FAB-announces-update-to-financial-targets"
+        "https://www.marketscreener.com/quote/stock/X-FAB-SILICON-FOUNDRIES-S-34491290/finances/",
+        "https://stockanalysis.com/quote/epa/XFAB/statistics/"
       ],
-      "note": "Boursier 摘要给 2027E EPS 约 €0.84；股份数约 130.63M，换算约 €110M，再按约 1.09 EUR/USD 粗算约 $120M。源偏旧且与其他估值暗示有冲突，只能低置信。"
+      "note": "MarketScreener public estimates page shows annual net income around $42.97M for 2027 and $63.55M for 2028. Market cap converted from about EUR 1.05B using a recent public EUR/USD quote near 1.16. 2029 remains null because a public figure was not visible."
     },
     {
       "ticker": "CAMT",
-      "marketCapUsd": "约 80 亿美元",
+      "marketCapUsd": "~$7.5B",
       "consensusProfitUsdY1": "~$210M",
       "consensusProfitUsdY2": null,
       "consensusProfitUsdY3": null,
@@ -110,7 +107,7 @@
         "https://stockanalysis.com/stocks/camt/forecast/",
         "https://stockanalysis.com/stocks/camt/statistics/"
       ],
-      "note": "公开页显示 2027E EPS avg 约 $4.56，股份数约 46.04M；换算 profit ≈ $210M。2028/2029 未公开。"
+      "note": "StockAnalysis public page shows 2027 EPS avg about $4.56 and 46.04M shares outstanding; converted Y1 profit is about $210M. 2028/2029 public consensus profit is not visible on the free page."
     }
   ]
 }

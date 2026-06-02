@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>工业瓶颈量化投研台</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=20260602-portfolio-discovery" />
   </head>
   <body>
     <div class="app-shell">
@@ -14,6 +14,10 @@
           <h1>工业瓶颈量化投研台</h1>
         </div>
         <div class="top-actions">
+          <nav class="page-nav" aria-label="主导航">
+            <button class="page-tab active" type="button" data-page-target="home">首页</button>
+            <button class="page-tab" type="button" data-page-target="discovery">发现页</button>
+          </nav>
           <select id="sortMode" class="select-control" aria-label="排序">
             <option value="score">赔率档</option>
             <option value="fundamental">基本面</option>
@@ -30,36 +34,24 @@
       </header>
 
       <main class="workspace">
-        <section class="overview-board" aria-label="portfolio summary">
-          <div class="metric-strip" aria-label="system status">
-            <div class="metric">
-              <span class="metric-label">观察池</span>
-              <strong id="stockCount">0</strong>
-            </div>
-            <div class="metric">
-              <span class="metric-label">止损红灯</span>
-              <strong id="redCount">0</strong>
-            </div>
-            <div class="metric">
-              <span class="metric-label">热度卖点</span>
-              <strong id="heatCount">0</strong>
-            </div>
-            <div class="metric">
-              <span class="metric-label">全局状态</span>
-              <strong id="globalSignal">计算中</strong>
-            </div>
-          </div>
-
-          <button class="portfolio-card" id="openPortfolio" type="button" aria-label="打开投资组合">
-            <div class="portfolio-card-head">
-              <div class="portfolio-title-line">
-                <h2>10 万 U 工业瓶颈组合</h2>
-                <strong id="portfolioPnl">0.00%</strong>
+        <div class="page-panel active" id="homePage" data-page="home">
+          <section class="portfolio-hero" id="portfolioHero" aria-label="投资组合总览">
+            <div class="portfolio-hero-main">
+              <div class="portfolio-hero-title">
+                <p class="section-kicker">Portfolio</p>
+                <div class="portfolio-title-line">
+                  <h2>10 万 U 工业瓶颈组合</h2>
+                  <strong id="portfolioPnl">0.00%</strong>
+                </div>
+                <p>工业瓶颈、AI 供需错配和硬科技稀缺资产的美元组合。</p>
               </div>
-              <span>点击查看持仓</span>
+              <div class="portfolio-hero-actions">
+                <button class="ghost-button" id="openPortfolio" type="button">查看完整持仓</button>
+              </div>
             </div>
-            <div class="portfolio-card-body">
-              <div class="portfolio-card-stats">
+
+            <div class="portfolio-hero-body">
+              <div class="portfolio-card-stats portfolio-hero-stats">
                 <span><em>仓位</em><strong id="portfolioExposure">--</strong></span>
                 <span><em>持仓数量</em><strong id="portfolioCash">--</strong></span>
                 <span><em>运行时长</em><strong id="portfolioActionMix">--</strong></span>
@@ -68,54 +60,101 @@
                 <polyline id="portfolioCurve" points="0,38 44,38 88,38 132,38 176,38 220,38"></polyline>
               </svg>
             </div>
-          </button>
-        </section>
 
-        <section class="execution-panel" aria-labelledby="executionTitle">
-          <div class="execution-head">
-            <div>
-              <p class="section-kicker">Execution Queue</p>
-              <h2 id="executionTitle">本周执行队列</h2>
+            <div class="portfolio-home-summary" id="portfolioHomeSummary"></div>
+            <div class="portfolio-home-positions" id="portfolioHomePositions"></div>
+          </section>
+
+          <section class="execution-panel" aria-labelledby="executionTitle">
+            <div class="execution-head">
+              <div>
+                <p class="section-kicker">Execution Queue</p>
+                <h2 id="executionTitle">本周执行队列</h2>
+              </div>
+              <div class="execution-head-actions">
+                <span>每次只处理 4 个，完成后自动补下一个</span>
+                <button class="ghost-button" id="resetExecutionQueue" type="button">重置本周</button>
+              </div>
             </div>
-            <span>红灯/真热度优先，其次主线与回调买点，再排查验证后 1 个月弱涨幅</span>
-          </div>
-          <div id="executionQueue" class="execution-grid"></div>
-        </section>
+            <div id="executionQueue" class="execution-grid"></div>
+          </section>
 
-        <section class="panel watch-panel" aria-labelledby="watchTitle">
-          <div class="panel-head compact-head">
-            <div>
-              <p class="section-kicker">Watchlist</p>
-              <h2 id="watchTitle">自选股票</h2>
+          <section class="panel watch-panel" aria-labelledby="watchTitle">
+            <div class="panel-head compact-head">
+              <div>
+                <p class="section-kicker">Watchlist</p>
+                <h2 id="watchTitle">自选股票</h2>
+              </div>
+              <div class="data-strip">
+                <span>价格频率：日频</span>
+                <span id="lastRefresh">最近更新：--</span>
+                <span>用途：投研评分，不做盘中交易</span>
+              </div>
             </div>
-            <div class="data-strip">
-              <span>价格频率：日频</span>
-              <span id="lastRefresh">最近更新：--</span>
-              <span>用途：投研评分，不做盘中交易</span>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr id="poolHeadRow"></tr>
+                </thead>
+                <tbody id="watchRows"></tbody>
+              </table>
             </div>
-          </div>
+          </section>
+        </div>
 
-          <div class="pool-tabs" role="tablist" aria-label="股票池">
-            <button class="pool-tab active" type="button" data-pool="watch">
-              自选股票 <span id="watchPoolCount">0</span>
-            </button>
-            <button class="pool-tab" type="button" data-pool="discovery">
-              发现池 <span id="discoveryPoolCount">0</span>
-            </button>
-            <button class="pool-tab" type="button" data-pool="validation">
-              验证池 <span id="validationPoolCount">0</span>
-            </button>
-          </div>
+        <div class="page-panel" id="discoveryPage" data-page="discovery" hidden>
+          <section class="panel discovery-panel" aria-labelledby="discoveryTitle">
+            <div class="panel-head compact-head">
+              <div>
+                <p class="section-kicker">Discovery</p>
+                <h2 id="discoveryTitle">发现体系</h2>
+              </div>
+              <div class="data-strip">
+                <span>发现池 <strong id="discoveryPoolCount">0</strong></span>
+                <span>验证池 <strong id="validationPoolCount">0</strong></span>
+              </div>
+            </div>
+            <div class="discovery-system-grid">
+              <div>
+                <strong>全市场入口</strong>
+                <p>从全球工业、硬科技、资源和能源链条里找候选，再用美元口径、验证事件和核心指标过滤。</p>
+              </div>
+              <div>
+                <strong>发现池</strong>
+                <p>先记录值得核验的公司，不进入首页执行池，也不参与组合动作。</p>
+              </div>
+              <div>
+                <strong>验证池</strong>
+                <p>已有订单、backlog、客户认证或财报线索，等待补齐验证锚点后加入自选。</p>
+              </div>
+            </div>
+            <div class="future-filter">
+              <span>全市场筛选入口</span>
+              <button class="ghost-button" type="button" disabled>待接入</button>
+            </div>
+          </section>
 
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr id="poolHeadRow"></tr>
-              </thead>
-              <tbody id="watchRows"></tbody>
-            </table>
-          </div>
-        </section>
+          <section class="panel discovery-list-panel" aria-labelledby="discoveryPoolTitle">
+            <div class="panel-head compact-head">
+              <div>
+                <p class="section-kicker">Discovery Pool</p>
+                <h2 id="discoveryPoolTitle">发现池</h2>
+              </div>
+            </div>
+            <div id="discoveryCards" class="candidate-card-grid"></div>
+          </section>
+
+          <section class="panel discovery-list-panel" aria-labelledby="validationPoolTitle">
+            <div class="panel-head compact-head">
+              <div>
+                <p class="section-kicker">Validation Pool</p>
+                <h2 id="validationPoolTitle">验证池</h2>
+              </div>
+            </div>
+            <div id="validationCards" class="candidate-card-grid"></div>
+          </section>
+        </div>
       </main>
 
       <section class="detail-drawer" id="detailDrawer" aria-labelledby="detailTicker" aria-hidden="true">
@@ -184,8 +223,16 @@
 
           <div class="drawer-grid">
             <section class="signal-block">
-              <h3>投研逻辑</h3>
-              <div class="logic-stack" id="logicStack"></div>
+              <h3>警报</h3>
+              <div id="alerts" class="alerts"></div>
+            </section>
+            <section class="signal-block">
+              <h3>我需要做的事情</h3>
+              <div id="todoList" class="alerts"></div>
+            </section>
+            <section class="signal-block">
+              <h3>我需要关注的点</h3>
+              <div id="watchPoints" class="alerts"></div>
             </section>
             <section class="signal-block">
               <h3>评分拆解</h3>
@@ -204,8 +251,8 @@
               <div id="sentimentBars" class="sentiment-bars"></div>
             </section>
             <section class="signal-block">
-              <h3>警报</h3>
-              <div id="alerts" class="alerts"></div>
+              <h3>投研逻辑</h3>
+              <div class="logic-stack" id="logicStack"></div>
             </section>
           </div>
         </article>
@@ -374,9 +421,9 @@
                 <tr>
                   <th>股票</th>
                   <th>角色</th>
-                  <th>目标仓位</th>
-                  <th>首批执行</th>
-                  <th>技术面买点</th>
+                  <th>仓位</th>
+                  <th>为什么这个仓位</th>
+                  <th>加仓条件</th>
                   <th>减仓/止损</th>
                 </tr>
               </thead>
@@ -392,6 +439,7 @@
       </section>
     </div>
 
-    <script src="./app.js?v=20260602-state-weights"></script>
+    <script src="./scripts/valuation-logic.js?v=20260602-valuation"></script>
+    <script src="./app.js?v=20260602-portfolio-discovery"></script>
   </body>
 </html>
