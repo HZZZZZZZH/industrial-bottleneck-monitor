@@ -1,13 +1,13 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-01T10:31:55.158Z",
+  "updatedAt": "2026-06-02T02:13:59.314Z",
   "items": [
     {
       "id": "baseline-AXTI-2026-06-01",
       "date": "2026-06-01",
       "ticker": "AXTI",
       "action": "持仓",
-      "price": 103.16,
+      "price": 109.55,
       "reason": "组合启动基线：逻辑仍在，但价格、热度或验证节奏不足以主动加仓。",
       "source": "baseline_snapshot",
       "fundamentalTier": "极佳",
@@ -17,9 +17,9 @@
       "valueTier": "跟踪",
       "technicalStatus": "低吸观察",
       "validationDate": "2025-05-14",
-      "validationGain": 7064,
+      "validationGain": 7508,
       "portfolioExposure": "34%",
-      "correctedAt": "2026-06-01T10:31:55.158Z",
+      "correctedAt": "2026-06-02T02:13:59.314Z",
       "correctionReason": "使用统一行情层的当前价与验证日锚定价重算。"
     },
     {
@@ -27,7 +27,7 @@
       "date": "2026-06-01",
       "ticker": "SIVE",
       "action": "减仓",
-      "price": 68.95,
+      "price": 60.85,
       "reason": "组合启动基线：风险、热度或验证后涨幅已经压过新增赔率。",
       "source": "baseline_snapshot",
       "fundamentalTier": "极佳",
@@ -37,9 +37,9 @@
       "valueTier": "期权",
       "technicalStatus": "追高区",
       "validationDate": "2024-11-12",
-      "validationGain": 1342,
+      "validationGain": 1173,
       "portfolioExposure": "34%",
-      "correctedAt": "2026-06-01T10:31:55.158Z",
+      "correctedAt": "2026-06-02T02:13:59.314Z",
       "correctionReason": "使用统一行情层的当前价与验证日锚定价重算。"
     },
     {
@@ -47,7 +47,7 @@
       "date": "2026-06-01",
       "ticker": "POET",
       "action": "持仓",
-      "price": 12.29,
+      "price": 13.89,
       "reason": "组合启动基线：逻辑仍在，但价格、热度或验证节奏不足以主动加仓。",
       "source": "baseline_snapshot",
       "fundamentalTier": "优秀",
@@ -57,9 +57,9 @@
       "valueTier": "期权",
       "technicalStatus": "等待确认",
       "validationDate": "2025-10-21",
-      "validationGain": 65,
+      "validationGain": 86,
       "portfolioExposure": "34%",
-      "correctedAt": "2026-06-01T10:31:55.158Z",
+      "correctedAt": "2026-06-02T02:13:59.314Z",
       "correctionReason": "使用统一行情层的当前价与验证日锚定价重算。"
     },
     {
@@ -67,7 +67,7 @@
       "date": "2026-06-01",
       "ticker": "VECO",
       "action": "加仓",
-      "price": 57.64,
+      "price": 57.245,
       "reason": "组合启动基线：验证、基本面和赔率仍匹配，技术面没有明显追高。",
       "source": "baseline_snapshot",
       "fundamentalTier": "优秀",
@@ -79,7 +79,7 @@
       "validationDate": "2026-04-24",
       "validationGain": 11,
       "portfolioExposure": "34%",
-      "correctedAt": "2026-06-01T10:31:55.158Z",
+      "correctedAt": "2026-06-02T02:13:59.314Z",
       "correctionReason": "使用统一行情层的当前价与验证日锚定价重算。"
     },
     {
@@ -87,7 +87,7 @@
       "date": "2026-06-01",
       "ticker": "AAOI",
       "action": "减仓",
-      "price": 158.41,
+      "price": 185.67,
       "reason": "组合启动基线：风险、热度或验证后涨幅已经压过新增赔率。",
       "source": "baseline_snapshot",
       "fundamentalTier": "极佳",
@@ -97,9 +97,9 @@
       "valueTier": "期权",
       "technicalStatus": "等待确认",
       "validationDate": "2025-06-17",
-      "validationGain": 844,
+      "validationGain": 1007,
       "portfolioExposure": "34%",
-      "correctedAt": "2026-06-01T10:31:55.158Z",
+      "correctedAt": "2026-06-02T02:13:59.314Z",
       "correctionReason": "使用统一行情层的当前价与验证日锚定价重算。"
     },
     {
@@ -107,7 +107,7 @@
       "date": "2026-06-01",
       "ticker": "MU",
       "action": "减仓",
-      "price": 971,
+      "price": 1035.5,
       "reason": "组合启动基线：风险、热度或验证后涨幅已经压过新增赔率。",
       "source": "baseline_snapshot",
       "fundamentalTier": "极佳",
@@ -117,9 +117,9 @@
       "valueTier": "跟踪",
       "technicalStatus": "追高区",
       "validationDate": "2024-06-26",
-      "validationGain": 582,
+      "validationGain": 627,
       "portfolioExposure": "34%",
-      "correctedAt": "2026-06-01T10:31:55.158Z",
+      "correctedAt": "2026-06-02T02:13:59.314Z",
       "correctionReason": "使用统一行情层的当前价与验证日锚定价重算。"
     },
     {
@@ -127,7 +127,7 @@
       "date": "2026-06-01",
       "ticker": "XFAB",
       "action": "持仓",
-      "price": 10.76,
+      "price": 9.645,
       "reason": "组合启动基线：逻辑仍在，但价格、热度或验证节奏不足以主动加仓。",
       "source": "baseline_snapshot",
       "fundamentalTier": "优秀",
@@ -137,9 +137,9 @@
       "valueTier": "期权",
       "technicalStatus": "追高区",
       "validationDate": "2026-04-30",
-      "validationGain": 71,
+      "validationGain": 53,
       "portfolioExposure": "34%",
-      "correctedAt": "2026-06-01T10:31:55.158Z",
+      "correctedAt": "2026-06-02T02:13:59.314Z",
       "correctionReason": "使用统一行情层的当前价与验证日锚定价重算。"
     },
     {
@@ -147,7 +147,7 @@
       "date": "2026-06-01",
       "ticker": "CAMT",
       "action": "加仓",
-      "price": 171.66,
+      "price": 163.09,
       "reason": "组合启动基线：验证、基本面和赔率仍匹配，技术面没有明显追高。",
       "source": "baseline_snapshot",
       "fundamentalTier": "优秀",
@@ -157,9 +157,9 @@
       "valueTier": "跟踪",
       "technicalStatus": "等待确认",
       "validationDate": "2025-12-10",
-      "validationGain": 42,
+      "validationGain": 35,
       "portfolioExposure": "34%",
-      "correctedAt": "2026-06-01T10:31:55.158Z",
+      "correctedAt": "2026-06-02T02:13:59.314Z",
       "correctionReason": "使用统一行情层的当前价与验证日锚定价重算。"
     }
   ]

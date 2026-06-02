@@ -15,12 +15,12 @@
         </div>
         <div class="top-actions">
           <select id="sortMode" class="select-control" aria-label="排序">
-            <option value="score">综合性价比</option>
+            <option value="score">资金优先级</option>
             <option value="fundamental">基本面</option>
             <option value="demand">需求兑现</option>
             <option value="media">媒体热度</option>
             <option value="risk">风险</option>
-            <option value="move">涨幅</option>
+            <option value="move">近一月涨幅</option>
           </select>
           <button class="ghost-button" id="openReview" type="button">复盘</button>
           <button class="ghost-button" id="openPipeline" type="button">入池</button>
@@ -69,6 +69,17 @@
               </svg>
             </div>
           </button>
+        </section>
+
+        <section class="execution-panel" aria-labelledby="executionTitle">
+          <div class="execution-head">
+            <div>
+              <p class="section-kicker">Execution Queue</p>
+              <h2 id="executionTitle">本周执行队列</h2>
+            </div>
+            <span>红灯/真热度优先，其次主线与回调买点，再排查验证后 1 个月弱涨幅</span>
+          </div>
+          <div id="executionQueue" class="execution-grid"></div>
         </section>
 
         <section class="panel watch-panel" aria-labelledby="watchTitle">
@@ -157,7 +168,7 @@
                 <strong id="mediaScore">--</strong>
               </div>
               <div>
-                <span>综合性价比档</span>
+                <span>资金优先级</span>
                 <strong id="compositeScore">--</strong>
               </div>
             </div>

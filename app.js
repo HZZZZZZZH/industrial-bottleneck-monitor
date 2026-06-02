@@ -30,13 +30,13 @@ const scoringModels = [
   },
   {
     title: "媒体热度风险",
-    body: "衡量普通人是否已经知道并想买：推特/谷歌搜索、官方媒体、报道涨幅、社交拥挤。",
-    formula: "四档：冷门 / 升温 / 拥挤 / 全民皆知",
+    body: "区分真正全民皆知和小圈层炒作：官方/主流报道、搜索扩散、散户入场新闻和标的覆盖面共同决定。",
+    formula: "四档：冷门 / 圈层拥挤 / 官方升温 / 全民皆知",
   },
   {
-    title: "综合性价比",
-    body: "优先级：需求验证 = 基本面 > 性价比 > 风险。性价比只看时间和赔率，不替代验证。",
-    formula: "四档：规避 / 期权仓 / 跟踪仓 / 主仓候选",
+    title: "资金优先级",
+    body: "衡量现在这笔钱该不该打进去：需求兑现、基本面、翻倍赔率、收入速度和市场验证为正因子；硬风险和未知风险为负因子。",
+    formula: "四档：暂不介入 / 小仓期权 / 回调买点 / 可打主仓",
   },
 ];
 
@@ -221,7 +221,7 @@ const weeklyScanSteps = [
   },
   {
     step: "组合动作评估",
-    input: "基本面、需求兑现、性价比、风险、情绪、技术面",
+    input: "基本面、需求兑现、资金优先级、风险、情绪、技术面",
     filter: "只能输出加仓、持仓、减仓、清仓",
     output: "组合候选或淘汰",
   },
@@ -923,7 +923,7 @@ const portfolioPlan = {
   pnlSeries: [0, 0, 0, 0, 0, 0],
   rules: [
     "组合不是一次性满仓：首批只按模型仓执行，剩余资金等 20D/50D、RSI、量能和公司验证信号共同触发。",
-    "买入优先级：需求验证 = 基本面 > 性价比 > 风险；技术面只负责确认价格节奏，不推翻基本面证伪。",
+    "买入优先级：需求验证 = 基本面 > 资金优先级 > 风险；技术面只负责确认价格节奏，不推翻基本面证伪。",
     "强趋势票只低吸或突破后回踩，不在单日放量长阳时追满目标仓。",
     "任何公司专属红灯触发时，先降到观察仓；若需求被证伪，不用等技术反弹。",
   ],
@@ -1238,16 +1238,16 @@ function tierForScore(score, type = "normal") {
 
   if (type === "emotion") {
     if (score >= 80) return { label: "全民皆知", className: "tier-1", width: 100 };
-    if (score >= 60) return { label: "拥挤", className: "tier-2", width: 75 };
-    if (score >= 40) return { label: "升温", className: "tier-3", width: 50 };
+    if (score >= 60) return { label: "官方升温", className: "tier-2", width: 75 };
+    if (score >= 40) return { label: "圈层拥挤", className: "tier-3", width: 50 };
     return { label: "冷门", className: "tier-4", width: 25 };
   }
 
   if (type === "value") {
-    if (score >= 75) return { label: "主仓", className: "tier-4", width: 100 };
-    if (score >= 62) return { label: "跟踪", className: "tier-3", width: 75 };
-    if (score >= 48) return { label: "期权", className: "tier-2", width: 50 };
-    return { label: "规避", className: "tier-1", width: 25 };
+    if (score >= 75) return { label: "可打主仓", className: "tier-4", width: 100 };
+    if (score >= 62) return { label: "回调买点", className: "tier-3", width: 75 };
+    if (score >= 48) return { label: "小仓期权", className: "tier-2", width: 50 };
+    return { label: "暂不介入", className: "tier-1", width: 25 };
   }
 
   if (type === "fundamental") {
@@ -1316,15 +1316,29 @@ function riskScore(stock) {
   const riskValues = Object.values(stock.risk);
   const baseRisk = riskValues.reduce((sum, value) => sum + value, 0) / riskValues.length;
   const heatRisk = sellHeatScore(stock) * 0.25;
+  const unknownRisk = unknownInformationRiskScore(stock) * 0.28;
+  const valuationRisk = valuationOverdrawRiskScore(stock) * 0.3;
   const validationOffset = Math.max(0, 70 - stock.scores.validation) * 0.45;
-  return Math.round(clamp(baseRisk * 0.75 + heatRisk + validationOffset));
+  return Math.round(clamp(baseRisk * 0.75 + heatRisk + unknownRisk + valuationRisk + validationOffset));
 }
 
 function upsideScore(stock) {
-  const extensionPenalty = clamp(validationGain(stock) / 12, 0, 45);
-  const validationBoost = stock.scores.validation > 70 ? 8 : 0;
+  const gain = validationGain(stock);
+  const marketProofBoost =
+    demandProbabilityScore(stock) >= 65 && fundamentalScore(stock) >= 62
+      ? clamp(Math.log10(Math.max(1, gain + 1)) * 8, 0, 22)
+      : 0;
+  const validationBoost = stock.scores.validation > 70 ? 10 : 0;
+  const unknownPenalty = unknownInformationRiskScore(stock) * 0.22;
   return Math.round(
-    clamp(stock.scores.scarcity * 0.32 + stock.scores.wave * 0.28 + stock.scores.mismatch * 0.25 + validationBoost - extensionPenalty)
+    clamp(
+      stock.scores.scarcity * 0.32 +
+        stock.scores.wave * 0.28 +
+        stock.scores.mismatch * 0.25 +
+        validationBoost +
+        marketProofBoost -
+        unknownPenalty
+    )
   );
 }
 
@@ -1337,7 +1351,182 @@ function sellHeatScore(stock) {
   const media = stock.sentiment.officialCoverage;
   const multiple = clamp((stock.sentiment.reportedMultiple / 10) * 100);
   const crowd = stock.sentiment.socialCrowding;
-  return Math.round(search * 0.3 + media * 0.3 + multiple * 0.22 + crowd * 0.18);
+  const base = media * 0.45 + search * 0.25 + multiple * 0.2 + crowd * 0.1;
+  const reachMultiplier = 0.55 + marketReachScore(stock) / 220;
+  return Math.round(clamp(base * reachMultiplier));
+}
+
+function circleCrowdingScore(stock) {
+  const search = clamp((stock.sentiment.searchSpike / 10) * 100);
+  const media = stock.sentiment.officialCoverage;
+  const multiple = clamp((stock.sentiment.reportedMultiple / 10) * 100);
+  const crowd = stock.sentiment.socialCrowding;
+  return Math.round(clamp(search * 0.35 + crowd * 0.35 + multiple * 0.2 + media * 0.1));
+}
+
+function marketReachScore(stock) {
+  const capText = `${stock.marketCap || stock.marketCapUsd || ""}`;
+  if (stock.ticker === "MU" || /1T|万亿|trillion/i.test(capText)) return 100;
+  if (/千亿|1000亿|百亿美元级/.test(capText)) return 62;
+  if (/B\+ SEK|SEK/i.test(capText)) return 24;
+  if (/[5-9]0 亿美元|[1-9]\dB/.test(capText)) return 48;
+  if (/[1-4]0 亿美元|数十亿美元/.test(capText)) return 36;
+  if (/[1-9] 亿美元|B\+ SEK/.test(capText)) return 24;
+  return 40;
+}
+
+function unknownInformationRiskScore(stock) {
+  const gain = validationGain(stock);
+  const demand = demandProbabilityScore(stock);
+  const fundamental = fundamentalScore(stock);
+  const inHotTheme = stock.scores.wave >= 80 || /AI|CPO|HBM|光模块|光子|InP|advanced packaging|hybrid bonding/i.test(`${stock.theme} ${stock.thesis}`);
+  const verificationAge = daysSince(stock.validation?.date);
+
+  if (!inHotTheme || demand < 62 || fundamental < 62) return 0;
+  if (verificationAge >= 30 && gain < 90) return 92;
+  if (gain < 25) return 78;
+  if (gain < 100) return 58;
+  return 0;
+}
+
+function verificationMomentumNote(stock) {
+  const gain = validationGain(stock);
+  const verificationAge = daysSince(stock.validation?.date);
+  if (!stock.validation?.date) return "缺验证日期，不能判断 1 个月市场反应。";
+  if (verificationAge < 30) return `验证后 ${verificationAge} 天，等待满 1 个月再判断是否接近翻倍。`;
+  if (gain < 90) return "验证后满 1 个月仍未接近 1 倍涨幅，视为市场不买账，需要先排查未知信息。";
+  return "验证后市场反应接近或超过 1 倍，涨幅本身是质量验证，不直接扣分。";
+}
+
+function fundamentalSnapshot(stock) {
+  const fundamentals = stock.fundamentals || {};
+  const valuation = forwardValuationBand(stock);
+  return {
+    marketCap: fundamentals.marketCapUsd || stock.marketCap || stock.marketCapUsd || "待补",
+    netProfit: fundamentals.netIncomeUsd || stock.profitUsd || "待补",
+    consensus3y: fundamentals.consensus3y || fundamentals.forward3yConsensus || valuation.consensusText || "待补",
+  };
+}
+
+function parseUsdAmount(value) {
+  if (Number.isFinite(Number(value))) return Number(value);
+  const text = `${value || ""}`.replace(/,/g, "").trim();
+  if (!text || /待补|待更新|待核验|SEK|JPY|EUR|CHF/i.test(text)) return null;
+  const match = text.match(/(\d+(?:\.\d+)?)/);
+  if (!match) return null;
+  const number = Number(match[1]);
+  if (!Number.isFinite(number)) return null;
+  if (/万亿|trillion|T\b/i.test(text)) return number * 1e12;
+  if (/千亿/.test(text)) return number * 1e11;
+  if (/亿美元/.test(text)) return number * 1e8;
+  if (/\bB\b|billion/i.test(text)) return number * 1e9;
+  if (/\bM\b|million/i.test(text)) return number * 1e6;
+  return null;
+}
+
+function consensusProfitUsd(stock, year) {
+  const fundamentals = stock.fundamentals || {};
+  const consensus = fundamentals.consensusProfitUsd || fundamentals.forwardProfitUsd || {};
+  const aliases = {
+    1: [consensus.y1, consensus.year1, fundamentals.consensusProfitUsdY1, fundamentals.forwardNetIncomeUsdY1, fundamentals.netIncomeUsdY1],
+    2: [consensus.y2, consensus.year2, fundamentals.consensusProfitUsdY2, fundamentals.forwardNetIncomeUsdY2, fundamentals.netIncomeUsdY2],
+    3: [consensus.y3, consensus.year3, fundamentals.consensusProfitUsdY3, fundamentals.forwardNetIncomeUsdY3, fundamentals.netIncomeUsdY3],
+  };
+  for (const candidate of aliases[year]) {
+    const parsed = parseUsdAmount(candidate);
+    if (parsed) return parsed;
+  }
+  return null;
+}
+
+function formatUsdCompact(value) {
+  if (!Number.isFinite(Number(value))) return "待补";
+  if (value >= 1e12) return `${Number((value / 1e12).toFixed(2))}T`;
+  if (value >= 1e9) return `${Number((value / 1e9).toFixed(1))}B`;
+  if (value >= 1e8) return `${Number((value / 1e8).toFixed(1))}亿`;
+  if (value >= 1e6) return `${Number((value / 1e6).toFixed(1))}M`;
+  return `${Math.round(value).toLocaleString("en-US")}`;
+}
+
+function forwardValuationBand(stock) {
+  const marketCap = parseUsdAmount(stock.fundamentals?.marketCapUsd || stock.marketCap || stock.marketCapUsd);
+  const profits = [1, 2, 3].map((year) => consensusProfitUsd(stock, year));
+  const [y1, y2, y3] = profits;
+  const consensusText = y3 ? `Y3 ${formatUsdCompact(y3)}` : "";
+
+  if (!marketCap || !y1 || !y2 || !y3) {
+    return {
+      available: false,
+      label: "估值待补",
+      percentile: 0,
+      risk: 0,
+      consensusText,
+      note: "缺少市值或未来 1/2/3 年一致预期利润，暂不触发估值卖点。",
+    };
+  }
+
+  const ranges = [
+    { year: 1, low: y1 * 30, high: y1 * 40 },
+    { year: 2, low: y2 * 30, high: y2 * 40 },
+    { year: 3, low: y3 * 30, high: y3 * 40 },
+  ];
+
+  if (marketCap < ranges[0].low) {
+    return {
+      available: true,
+      label: "1年低估",
+      percentile: 10,
+      risk: 35,
+      consensusText,
+      note: "按第 1 年利润估值仍低，可能是低估，也可能是市场知道我们不知道的问题。",
+    };
+  }
+
+  for (const range of ranges) {
+    if (marketCap <= range.high) {
+      const inBand = clamp(((marketCap - range.low) / (range.high - range.low)) * 100, 0, 100);
+      const basePercentile = { 1: 20, 2: 50, 3: 80 }[range.year];
+      return {
+        available: true,
+        label: `${range.year}年${range.year === 3 ? "透支" : "正常"}`,
+        percentile: Math.round(clamp(basePercentile + inBand * 0.18)),
+        risk: range.year === 3 ? 72 : range.year === 2 ? 40 : 24,
+        consensusText,
+        note:
+          range.year === 3
+            ? "当前市值已经交易到未来第 3 年 30-40 倍利润区间，属于估值透支区。"
+            : `当前市值主要交易到未来第 ${range.year} 年 30-40 倍利润区间，估值尚未透支到第 3 年。`,
+      };
+    }
+  }
+
+  return {
+    available: true,
+    label: "超过3年",
+    percentile: 100,
+    risk: 95,
+    consensusText,
+    note: "当前市值已经超过未来第 3 年 40 倍利润，属于明确估值卖出信号。",
+  };
+}
+
+function valuationOverdrawRiskScore(stock) {
+  return forwardValuationBand(stock).risk;
+}
+
+function sentimentClimaxSignal(stock) {
+  return (
+    sellHeatScore(stock) >= 88 &&
+    stock.sentiment.officialCoverage >= 85 &&
+    stock.sentiment.socialCrowding >= 85 &&
+    stock.sentiment.reportedMultiple >= 8 &&
+    validationGain(stock) >= 1000
+  );
+}
+
+function valuationSellSignal(stock) {
+  const valuation = forwardValuationBand(stock);
+  return valuation.available && valuation.risk >= 90;
 }
 
 function valueScore(stock) {
@@ -1346,7 +1535,8 @@ function valueScore(stock) {
   const upside = upsideScore(stock);
   const time = timeScore(stock);
   const risk = riskScore(stock);
-  return Math.round(clamp(demand * 0.32 + fundamental * 0.32 + upside * 0.18 + time * 0.1 - risk * 0.08));
+  const marketProof = clamp(validationGain(stock) / 8, 0, 18);
+  return Math.round(clamp(demand * 0.3 + fundamental * 0.28 + upside * 0.24 + time * 0.1 + marketProof - risk * 0.08));
 }
 
 function lightForStock(stock) {
@@ -1356,8 +1546,9 @@ function lightForStock(stock) {
   const hardRisk =
     stock.risk.dilution >= 85 ||
     stock.risk.export >= 85 ||
+    valuationSellSignal(stock) ||
     (heat >= 82 && validation < 75) ||
-    (stock.sentiment.officialCoverage >= 85 && stock.sentiment.searchSpike >= 7 && validationGain(stock) >= 500);
+    sentimentClimaxSignal(stock);
 
   if (hardRisk || risk >= 78) return "red";
   if (risk >= 55 || heat >= 70 || validation < 60) return "amber";
@@ -1373,6 +1564,8 @@ function actionForStock(stock) {
   const value = valueScore(stock);
   const gain = validationGain(stock);
   const tech = technicalStatus(stock);
+  const unknownRisk = unknownInformationRiskScore(stock);
+  const circleHeat = circleCrowdingScore(stock);
 
   if (demand < 50 || (risk >= 85 && demand < 70) || (stock.scores.validation < 55 && risk >= 75)) {
     return {
@@ -1383,21 +1576,48 @@ function actionForStock(stock) {
     };
   }
 
-  if (light === "red" || risk >= 65 || heat >= 82 || (gain >= 500 && heat >= 70) || (tech.level === "red" && gain >= 200)) {
+  if (valuationSellSignal(stock)) {
     return {
       label: "减仓",
       className: "action-reduce",
       tone: "amber",
-      reason: "风险、热度或验证后涨幅已经压过新增赔率。",
+      reason: "市值已经超过未来第 3 年 40 倍一致预期利润，估值透支 3 年，触发卖出信号。",
     };
   }
 
-  if (demand >= 75 && fundamental >= 70 && value >= 62 && risk < 55 && heat < 75 && tech.level !== "red" && gain < 500) {
+  if (light === "red" || sentimentClimaxSignal(stock)) {
+    return {
+      label: "减仓",
+      className: "action-reduce",
+      tone: "amber",
+      reason: "硬红灯或官方报道叠加散户狂热的见顶信号已经出现，先保护利润。",
+    };
+  }
+
+  if (unknownRisk >= 55 || risk >= 68) {
+    return {
+      label: "持仓",
+      className: "action-hold",
+      tone: "blue",
+      reason: "验证后 1 个月没有接近翻倍，或硬风险偏高，先排查市场不买账的原因。",
+    };
+  }
+
+  if (tech.level === "red" && gain >= 200 && heat < 78) {
+    return {
+      label: "等回调",
+      className: "action-hold",
+      tone: "blue",
+      reason: "市场已经验证强度，核心策略是蹲回撤，不在短线延伸段追满。",
+    };
+  }
+
+  if (demand >= 75 && fundamental >= 70 && value >= 62 && risk < 62 && heat < 78 && unknownRisk < 45 && circleHeat < 90) {
     return {
       label: "加仓",
       className: "action-add",
       tone: "green",
-      reason: "验证、基本面和赔率仍匹配，技术面没有明显追高。",
+      reason: "验证、基本面、翻倍赔率和风险仍匹配，允许按计划加仓。",
     };
   }
 
@@ -1405,7 +1625,7 @@ function actionForStock(stock) {
     label: "持仓",
     className: "action-hold",
     tone: "blue",
-    reason: "逻辑仍在，但价格、热度或验证节奏不足以主动加仓。",
+    reason: "逻辑仍在，等待回调、验证增强或风险解除后再提高仓位。",
   };
 }
 
@@ -1771,7 +1991,7 @@ function updatePoolChrome() {
 function renderPoolHead() {
   const headers =
     activePool === "watch"
-      ? ["股票", "行业/领域", "核心追踪指标", "价格快照", "验证入池/涨幅", "基本面档", "兑现档", "性价比档", "风险档", "情绪档", "状态"]
+      ? ["股票", "行业/领域", "基本面快照", "价格快照", "验证入池/涨幅", "基本面档", "兑现档", "资金优先级", "风险档", "情绪档", "状态"]
       : ["股票", "国家/交易所", "行业/领域", "美元口径", "发现/验证线索", "核心追踪指标", "下一步", "操作"];
 
   document.querySelector("#poolHeadRow").innerHTML = headers.map((header) => `<th>${header}</th>`).join("");
@@ -1916,6 +2136,7 @@ function renderRows() {
       const active = stock.ticker === selectedTicker ? "active" : "";
       const gain = validationGain(stock);
       const gainWarning = demand >= 65 && fundamental >= 62 && gain < 100;
+      const fundamentals = fundamentalSnapshot(stock);
       const anchorReliable = stock.validation?.anchorReliable !== false;
       const anchorLabel = stock.validation?.price
         ? `${anchorReliable ? "锚点" : "代理锚点"} ${stock.validation.price}`
@@ -1935,12 +2156,16 @@ function renderRows() {
             </div>
           </td>
           <td>
-            <span class="lead-text">${stock.leadMetric}</span>
+            <div class="usd-stack">
+              <span>市值 ${fundamentals.marketCap}</span>
+              <span>净利润 ${fundamentals.netProfit}</span>
+              <span>三年预期 ${fundamentals.consensus3y}</span>
+            </div>
           </td>
           <td>
             <div class="move-stack">
               <div class="move-line"><span>最新价</span><strong>${stock.price}</strong></div>
-              <div class="move-line"><span>月度</span><strong class="${stock.month >= 0 ? "up" : "down"}">${formatMove(stock.month)}</strong></div>
+              <div class="move-line"><span>近一月</span><strong class="${stock.month >= 0 ? "up" : "down"}">${formatMove(stock.month)}</strong></div>
               <div class="mini-bar"><span style="width:${clamp(Math.abs(stock.month))}%"></span></div>
             </div>
           </td>
@@ -2024,6 +2249,8 @@ function renderDetails(stock) {
     .join("");
 
   const sentiment = [
+    { label: "真实全民热度", value: tierForScore(sellHeatScore(stock), "emotion").label, score: sellHeatScore(stock), risk: true },
+    { label: "圈层炒作热度", value: tierForScore(circleCrowdingScore(stock), "emotion").label, score: circleCrowdingScore(stock), risk: true },
     { label: "搜索热度倍数", value: `${stock.sentiment.searchSpike}x`, score: clamp(stock.sentiment.searchSpike * 10), risk: true },
     { label: "官方媒体覆盖", value: stock.sentiment.officialCoverage, score: stock.sentiment.officialCoverage, risk: true },
     { label: "报道涨幅倍数", value: `${stock.sentiment.reportedMultiple}x`, score: clamp(stock.sentiment.reportedMultiple * 10), risk: true },
@@ -2047,11 +2274,20 @@ function renderDetails(stock) {
 }
 
 function renderScoreBreakdown(stock) {
+  const valuation = forwardValuationBand(stock);
   const rows = [
     { label: "基本面", value: fundamentalScore(stock), note: "行业 Beta / 错配 / 弹性 / 稀缺价值链", type: "fundamental" },
     { label: "需求兑现", value: demandProbabilityScore(stock), note: "领先指标能否进入财报", type: "demand" },
-    { label: "剩余赔率", value: upsideScore(stock), note: "稀缺性和拥挤度后的空间", type: "normal" },
-    { label: "媒体热度", value: sellHeatScore(stock), note: "越高越接近全民皆知", type: "emotion" },
+    { label: "翻倍赔率", value: upsideScore(stock), note: "稀缺性、时代 Beta 和市场验证后的上行空间", type: "normal" },
+    {
+      label: "三年估值分位",
+      value: valuation.available ? valuation.percentile : 0,
+      note: valuation.note,
+      type: valuation.available ? "risk" : "normal",
+      display: valuation.available ? `${valuation.label} · ${valuation.percentile}%` : "待补",
+    },
+    { label: "真实热度", value: sellHeatScore(stock), note: "官方报道、搜索和标的覆盖面的全民化程度", type: "emotion" },
+    { label: "未知风险", value: unknownInformationRiskScore(stock), note: verificationMomentumNote(stock), type: "risk" },
     { label: "硬风险", value: riskScore(stock), note: "公司专属证伪逻辑", type: "risk" },
   ];
 
@@ -2061,7 +2297,7 @@ function renderScoreBreakdown(stock) {
       return `
         <div class="metric-row">
           <span>${row.label} · ${row.note}</span>
-          <strong>${tier.label}</strong>
+          <strong>${row.display || tier.label}</strong>
           <div class="bar-track"><span class="${tier.className}" style="width:${tier.width}%"></span></div>
         </div>
       `;
@@ -2108,6 +2344,7 @@ function renderAlerts(stock) {
   const risk = riskScore(stock);
   const fundamental = fundamentalScore(stock);
   const demand = demandProbabilityScore(stock);
+  const valuation = forwardValuationBand(stock);
 
   if (stock.risk.dilution >= 80) {
     alerts.push(["red", "稀释红线：ATM/融资压力已经足以压制短期赔率。"]);
@@ -2121,8 +2358,15 @@ function renderAlerts(stock) {
   if (validationGain(stock) >= 500 && stock.sentiment.officialCoverage >= 80) {
     alerts.push(["amber", "拥挤警报：官方报道开始替代基本面成为边际买盘来源。"]);
   }
-  if (fundamental >= 62 && demand >= 65 && validationGain(stock) < 100) {
-    alerts.push(["amber", `反常识警报：基本面与需求验证都达标，但需求验证后 1 个月涨幅低于 1 倍。${contradictionRiskLibrary[stock.ticker] || "需要提高风险等级并排查未知问题。"}`]);
+  if (valuation.available && valuation.risk >= 90) {
+    alerts.push(["red", `估值卖点：${valuation.note}`]);
+  } else if (valuation.available && valuation.risk >= 72) {
+    alerts.push(["amber", `估值透支：${valuation.note}`]);
+  } else if (valuation.available && valuation.risk >= 35 && valuation.percentile <= 15) {
+    alerts.push(["amber", `低估排查：${valuation.note}`]);
+  }
+  if (fundamental >= 62 && demand >= 65 && daysSince(stock.validation?.date) >= 30 && validationGain(stock) < 90) {
+    alerts.push(["amber", `反常识警报：基本面与需求验证都达标，但验证后 1 个月仍未接近 1 倍涨幅；不买，先排查未知信息。${contradictionRiskLibrary[stock.ticker] || "需要提高风险等级并排查未知问题。"}`]);
   }
   if (stock.scores.validation >= 80 && risk < 55) {
     alerts.push(["green", "验证优先：领先指标仍能被资本逐季追踪。"]);
@@ -2243,16 +2487,16 @@ function technicalStatus(stock) {
   }
 
   if (stock.day <= -3 && stock.month >= 80) {
-    return { level: "green", label: "强势回调", text: `日内 ${formatMove(stock.day)}，月度 ${formatMove(stock.month)}；先等止跌，不一次性抄满。` };
+    return { level: "green", label: "强势回调", text: `日内 ${formatMove(stock.day)}，近一月 ${formatMove(stock.month)}；先等止跌，不一次性抄满。` };
   }
   if (stock.month >= 180) {
-    return { level: "red", label: "高位延伸", text: `月度 ${formatMove(stock.month)}；只允许小仓或等 20D/50D 回踩。` };
+    return { level: "red", label: "高位延伸", text: `近一月 ${formatMove(stock.month)}；只允许小仓或等 20D/50D 回踩。` };
   }
   if (stock.day >= 5 && stock.month >= 50) {
     return { level: "red", label: "放量追涨", text: `日内 ${formatMove(stock.day)}；等回踩或新订单确认。` };
   }
   if (stock.month <= 35) {
-    return { level: "amber", label: "低位构筑", text: `月度 ${formatMove(stock.month)}；等放量突破平台再加仓。` };
+    return { level: "amber", label: "低位构筑", text: `近一月 ${formatMove(stock.month)}；等放量突破平台再加仓。` };
   }
   return { level: "amber", label: "等待日线", text: "接入 EODHD 日线后自动显示 RSI、20D/50D 和量能比。" };
 }
@@ -2372,6 +2616,137 @@ function renderSummary() {
   }
 }
 
+function executionQueueForStock(stock) {
+  const action = actionForStock(stock);
+  const light = lightForStock(stock);
+  const heat = sellHeatScore(stock);
+  const circleHeat = circleCrowdingScore(stock);
+  const unknownRisk = unknownInformationRiskScore(stock);
+  const valueTier = tierForScore(valueScore(stock), "value");
+  const gain = validationGain(stock);
+  const demand = demandProbabilityScore(stock);
+  const fundamental = fundamentalScore(stock);
+  const valuation = forwardValuationBand(stock);
+
+  if (light === "red" || action.label === "清仓" || action.label === "减仓" || sentimentClimaxSignal(stock)) {
+    return {
+      priority: 1,
+      tag: valuationSellSignal(stock) ? "估值卖点" : sentimentClimaxSignal(stock) ? "狂热见顶" : "红灯处理",
+      className: "queue-red",
+      note: action.reason,
+    };
+  }
+
+  if (valuation.available && valuation.risk >= 72) {
+    return {
+      priority: 2,
+      tag: "估值透支",
+      className: "queue-amber",
+      note: valuation.note,
+    };
+  }
+
+  if (valueTier.label === "可打主仓" && heat >= 78 && demand >= 75) {
+    return {
+      priority: 3,
+      tag: "主线持仓",
+      className: "queue-blue",
+      note: "大市值主线仍有翻倍赔率，热度只限制追高，不直接否定新增价值。",
+    };
+  }
+
+  if (demand >= 65 && fundamental >= 62 && gain >= 200 && heat < 78) {
+    return {
+      priority: 4,
+      tag: "蹲回调",
+      className: "queue-blue",
+      note: "市场验证过的强标的，不因涨幅大直接降级；等待技术回撤和热度冷却。",
+    };
+  }
+
+  if (action.label === "加仓" || valueTier.label === "可打主仓") {
+    return {
+      priority: 5,
+      tag: "加仓候选",
+      className: "queue-green",
+      note: action.reason,
+    };
+  }
+
+  if (unknownRisk >= 55) {
+    return {
+      priority: 6,
+      tag: "反常识排查",
+      className: "queue-amber",
+      note: "极佳公司验证后 1 个月没接近翻倍，不买；先查市场不买账的未知信息。",
+    };
+  }
+
+  if (circleHeat >= 75 && heat < 70) {
+    return {
+      priority: 7,
+      tag: "圈层拥挤",
+      className: "queue-amber",
+      note: "小圈层热度高但还不是全民皆知，跟踪回撤和新增验证。",
+    };
+  }
+
+  return {
+    priority: 8,
+    tag: "持续跟踪",
+    className: "queue-blue",
+    note: action.reason,
+  };
+}
+
+function renderExecutionQueue() {
+  const queue = stocks
+    .map((stock) => ({
+      stock,
+      action: actionForStock(stock),
+      queue: executionQueueForStock(stock),
+      value: valueScore(stock),
+      heat: sellHeatScore(stock),
+      unknownRisk: unknownInformationRiskScore(stock),
+      gain: validationGain(stock),
+    }))
+    .sort((a, b) => {
+      if (a.queue.priority !== b.queue.priority) return a.queue.priority - b.queue.priority;
+      if (a.queue.priority === 4) return b.unknownRisk - a.unknownRisk;
+      if (a.queue.priority === 1) return b.heat - a.heat;
+      return b.value - a.value;
+    })
+    .slice(0, 8);
+
+  document.querySelector("#executionQueue").innerHTML = queue
+    .map(
+      (item) => `
+        <button class="execution-card" type="button" data-queue-ticker="${item.stock.ticker}">
+          <div class="execution-card-top">
+            <strong>${item.stock.ticker}</strong>
+            <span class="queue-tag ${item.queue.className}">${item.queue.tag}</span>
+          </div>
+          <p>${item.stock.name} · ${item.stock.theme}</p>
+          <p>${item.queue.note}</p>
+          <div class="execution-card-meta">
+            <span class="score-pill ${tierForScore(item.value, "value").className}">${tierForScore(item.value, "value").label}</span>
+            <span class="company">验证后 ${formatMove(item.gain)}</span>
+          </div>
+        </button>
+      `
+    )
+    .join("");
+
+  document.querySelectorAll("[data-queue-ticker]").forEach((button) => {
+    button.addEventListener("click", () => {
+      selectedTicker = button.dataset.queueTicker;
+      activePool = "watch";
+      render();
+      openDrawer();
+    });
+  });
+}
+
 function openDrawer() {
   const drawer = document.querySelector("#detailDrawer");
   drawer.classList.add("open");
@@ -2475,6 +2850,7 @@ function render() {
   }
   renderSummary();
   renderPortfolio();
+  renderExecutionQueue();
 }
 
 document.querySelector("#sortMode").addEventListener("change", (event) => {

@@ -1,17 +1,17 @@
 {
   "source": "eodhd",
-  "updatedAt": "2026-06-01T10:31:45.447Z",
+  "updatedAt": "2026-06-02T02:13:30.666Z",
   "priceMode": "adjusted_close",
   "validationPriceMode": "exact validation-date close when available; source-linked manual anchor otherwise",
   "quotes": [
     {
       "ticker": "AXTI",
       "symbol": "AXTI.US",
-      "date": "2026-05-29",
+      "date": "2026-06-01",
       "priceMode": "adjusted_close",
-      "price": 103.16,
-      "dayChangePct": -10.84,
-      "monthChangePct": 30.22,
+      "price": 109.55,
+      "dayChangePct": 6.19,
+      "monthChangePct": 14.11,
       "validation": {
         "requestedDate": "2025-05-14",
         "priceDate": "2025-05-14",
@@ -25,16 +25,16 @@
         "verifiedAt": "2026-06-01",
         "tolerancePct": null,
         "note": "Yahoo/Polygon-style US equity close is 1.44; Trading212 CFD history showed 1.43, so the system uses the primary equity close for the validation anchor.",
-        "gainPct": 7063.89
+        "gainPct": 7507.64
       },
-      "volume": 11168700,
+      "volume": 10961909,
       "technicals": {
-        "sma20": 115.401,
-        "sma50": 85.1922,
-        "rsi14": 45.15,
-        "volumeRatio20": 1.09,
-        "distanceToSma20Pct": -10.61,
-        "distanceToSma50Pct": 21.09,
+        "sma20": 116.0785,
+        "sma50": 86.2214,
+        "rsi14": 43.89,
+        "volumeRatio20": 1.11,
+        "distanceToSma20Pct": -5.62,
+        "distanceToSma50Pct": 27.06,
         "aboveSma20": false,
         "aboveSma50": true
       }
@@ -42,11 +42,11 @@
     {
       "ticker": "SIVE",
       "symbol": "SIVE.ST",
-      "date": "2026-05-29",
+      "date": "2026-06-01",
       "priceMode": "adjusted_close",
-      "price": 68.95,
-      "dayChangePct": -1.78,
-      "monthChangePct": 81.45,
+      "price": 60.85,
+      "dayChangePct": -11.75,
+      "monthChangePct": 8.76,
       "validation": {
         "requestedDate": "2024-11-12",
         "priceDate": "2024-11-12",
@@ -60,16 +60,16 @@
         "verifiedAt": "2026-06-01",
         "tolerancePct": 2,
         "note": "Approximate validation-date close retained from the original thesis seed; accepted tolerance is 1-2% because this system uses anchors for research attribution, not trade execution.",
-        "gainPct": 1342.47
+        "gainPct": 1173.01
       },
-      "volume": 36936277,
+      "volume": 15082773,
       "technicals": {
-        "sma20": 57.981,
-        "sma50": 33.98,
-        "rsi14": 63.2,
-        "volumeRatio20": 1.66,
-        "distanceToSma20Pct": 18.92,
-        "distanceToSma50Pct": 102.91,
+        "sma20": 59.1235,
+        "sma50": 35.0589,
+        "rsi14": 55.76,
+        "volumeRatio20": 0.69,
+        "distanceToSma20Pct": 2.92,
+        "distanceToSma50Pct": 73.57,
         "aboveSma20": true,
         "aboveSma50": true
       }
@@ -77,11 +77,11 @@
     {
       "ticker": "POET",
       "symbol": "POET.US",
-      "date": "2026-05-29",
+      "date": "2026-06-01",
       "priceMode": "adjusted_close",
-      "price": 12.29,
-      "dayChangePct": -7.32,
-      "monthChangePct": 72.61,
+      "price": 13.89,
+      "dayChangePct": 13.02,
+      "monthChangePct": 90.01,
       "validation": {
         "requestedDate": "2025-10-21",
         "priceDate": "2025-10-21",
@@ -92,28 +92,28 @@
         "method": "first_trading_day_on_or_after_validation_date",
         "provider": "eodhd",
         "sourceUrl": null,
-        "gainPct": 64.97
+        "gainPct": 86.44
       },
-      "volume": 30895400,
+      "volume": 46088253,
       "technicals": {
-        "sma20": 12.8035,
-        "sma50": 9.4926,
-        "rsi14": 53.08,
-        "volumeRatio20": 0.52,
-        "distanceToSma20Pct": -4.01,
-        "distanceToSma50Pct": 29.47,
-        "aboveSma20": false,
+        "sma20": 13.1325,
+        "sma50": 9.6458,
+        "rsi14": 49.98,
+        "volumeRatio20": 0.76,
+        "distanceToSma20Pct": 5.77,
+        "distanceToSma50Pct": 44,
+        "aboveSma20": true,
         "aboveSma50": true
       }
     },
     {
       "ticker": "VECO",
       "symbol": "VECO.US",
-      "date": "2026-05-29",
+      "date": "2026-06-01",
       "priceMode": "adjusted_close",
-      "price": 57.64,
-      "dayChangePct": -2.52,
-      "monthChangePct": 15.63,
+      "price": 57.245,
+      "dayChangePct": -0.69,
+      "monthChangePct": 13.92,
       "validation": {
         "requestedDate": "2026-04-24",
         "priceDate": "2026-04-24",
@@ -124,16 +124,16 @@
         "method": "first_trading_day_on_or_after_validation_date",
         "provider": "eodhd",
         "sourceUrl": null,
-        "gainPct": 11.42
+        "gainPct": 10.66
       },
-      "volume": 1473700,
+      "volume": 624567,
       "technicals": {
-        "sma20": 57.7355,
-        "sma50": 47.3112,
-        "rsi14": 45.85,
-        "volumeRatio20": 0.92,
-        "distanceToSma20Pct": -0.17,
-        "distanceToSma50Pct": 21.83,
+        "sma20": 58.0852,
+        "sma50": 47.8279,
+        "rsi14": 40.11,
+        "volumeRatio20": 0.39,
+        "distanceToSma20Pct": -1.45,
+        "distanceToSma50Pct": 19.69,
         "aboveSma20": false,
         "aboveSma50": true
       }
@@ -141,11 +141,11 @@
     {
       "ticker": "AAOI",
       "symbol": "AAOI.US",
-      "date": "2026-05-29",
+      "date": "2026-06-01",
       "priceMode": "adjusted_close",
-      "price": 158.41,
-      "dayChangePct": -6.28,
-      "monthChangePct": -3.62,
+      "price": 185.67,
+      "dayChangePct": 17.21,
+      "monthChangePct": 1.18,
       "validation": {
         "requestedDate": "2025-06-17",
         "priceDate": "2025-06-17",
@@ -156,28 +156,28 @@
         "method": "first_trading_day_on_or_after_validation_date",
         "provider": "eodhd",
         "sourceUrl": null,
-        "gainPct": 844.04
+        "gainPct": 1006.5
       },
-      "volume": 11879500,
+      "volume": 15956592,
       "technicals": {
-        "sma20": 178.2665,
-        "sma50": 147.9736,
-        "rsi14": 52.69,
-        "volumeRatio20": 0.98,
-        "distanceToSma20Pct": -11.14,
-        "distanceToSma50Pct": 7.05,
-        "aboveSma20": false,
+        "sma20": 178.3745,
+        "sma50": 149.6486,
+        "rsi14": 50.23,
+        "volumeRatio20": 1.3,
+        "distanceToSma20Pct": 4.09,
+        "distanceToSma50Pct": 24.07,
+        "aboveSma20": true,
         "aboveSma50": true
       }
     },
     {
       "ticker": "MU",
       "symbol": "MU.US",
-      "date": "2026-05-29",
+      "date": "2026-06-01",
       "priceMode": "adjusted_close",
-      "price": 971,
-      "dayChangePct": 5.14,
-      "monthChangePct": 87.76,
+      "price": 1035.5,
+      "dayChangePct": 6.64,
+      "monthChangePct": 90.98,
       "validation": {
         "requestedDate": "2024-06-26",
         "priceDate": "2024-06-26",
@@ -191,16 +191,16 @@
         "verifiedAt": "2026-06-01",
         "tolerancePct": 2,
         "note": "Searchable historical sources show MU close near 142.36 on 2024-06-26; this replaces EODHD's one-year-history fallback anchor.",
-        "gainPct": 582.07
+        "gainPct": 627.38
       },
-      "volume": 60295700,
+      "volume": 45208892,
       "technicals": {
-        "sma20": 751.464,
-        "sma50": 557.5356,
-        "rsi14": 70.09,
-        "volumeRatio20": 1.08,
-        "distanceToSma20Pct": 29.21,
-        "distanceToSma50Pct": 74.16,
+        "sma20": 776.1285,
+        "sma50": 569.3639,
+        "rsi14": 70.93,
+        "volumeRatio20": 0.81,
+        "distanceToSma20Pct": 33.42,
+        "distanceToSma50Pct": 81.87,
         "aboveSma20": true,
         "aboveSma50": true
       }
@@ -208,11 +208,11 @@
     {
       "ticker": "XFAB",
       "symbol": "XFAB.PA",
-      "date": "2026-05-29",
+      "date": "2026-06-01",
       "priceMode": "adjusted_close",
-      "price": 10.76,
-      "dayChangePct": -5.28,
-      "monthChangePct": 71.07,
+      "price": 9.645,
+      "dayChangePct": -10.36,
+      "monthChangePct": 52.13,
       "validation": {
         "requestedDate": "2026-04-30",
         "priceDate": "2026-04-30",
@@ -223,16 +223,16 @@
         "method": "first_trading_day_on_or_after_validation_date",
         "provider": "eodhd",
         "sourceUrl": null,
-        "gainPct": 71.07
+        "gainPct": 53.34
       },
-      "volume": 1569373,
+      "volume": 2135136,
       "technicals": {
-        "sma20": 7.9762,
-        "sma50": 6.4636,
-        "rsi14": 70.9,
-        "volumeRatio20": 1.6,
-        "distanceToSma20Pct": 34.9,
-        "distanceToSma50Pct": 66.47,
+        "sma20": 8.1415,
+        "sma50": 6.5606,
+        "rsi14": 63.82,
+        "volumeRatio20": 1.99,
+        "distanceToSma20Pct": 18.47,
+        "distanceToSma50Pct": 47.01,
         "aboveSma20": true,
         "aboveSma50": true
       }
@@ -240,11 +240,11 @@
     {
       "ticker": "CAMT",
       "symbol": "CAMT.US",
-      "date": "2026-05-29",
+      "date": "2026-06-01",
       "priceMode": "adjusted_close",
-      "price": 171.66,
-      "dayChangePct": -1.79,
-      "monthChangePct": -10.56,
+      "price": 163.09,
+      "dayChangePct": -4.99,
+      "monthChangePct": -12.61,
       "validation": {
         "requestedDate": "2025-12-10",
         "priceDate": "2025-12-10",
@@ -255,16 +255,16 @@
         "method": "first_trading_day_on_or_after_validation_date",
         "provider": "eodhd",
         "sourceUrl": null,
-        "gainPct": 41.73
+        "gainPct": 34.65
       },
-      "volume": 302900,
+      "volume": 901287,
       "technicals": {
-        "sma20": 177.177,
-        "sma50": 175.55,
-        "rsi14": 33.03,
-        "volumeRatio20": 0.59,
-        "distanceToSma20Pct": -3.11,
-        "distanceToSma50Pct": -2.22,
+        "sma20": 176.0005,
+        "sma50": 175.3668,
+        "rsi14": 29.17,
+        "volumeRatio20": 1.68,
+        "distanceToSma20Pct": -7.34,
+        "distanceToSma50Pct": -7,
         "aboveSma20": false,
         "aboveSma50": false
       }

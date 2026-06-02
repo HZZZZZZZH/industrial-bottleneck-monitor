@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-01T10:31:55.158Z",
+  "updatedAt": "2026-06-02T02:13:59.314Z",
   "items": [
     {
       "ticker": "AXTI",
@@ -8,10 +8,10 @@
       "industry": "化合物半导体材料",
       "theme": "InP/GaAs 衬底",
       "stage": "backlog 验证",
-      "price": 103.16,
-      "day": -10.84,
-      "month": 30.22,
-      "sinceAdded": 7064,
+      "price": 109.55,
+      "day": 6.19,
+      "month": 14.11,
+      "sinceAdded": 7508,
       "validation": {
         "date": "2025-05-14",
         "price": 1.44,
@@ -22,7 +22,7 @@
         "priceStatus": "exact",
         "priceSourceUrl": "https://finance.yahoo.com/quote/AXTI/history/",
         "anchorReliable": true,
-        "gainPct": 7063.89,
+        "gainPct": 7507.64,
         "tolerancePct": null,
         "note": "Yahoo/Polygon-style US equity close is 1.44; Trading212 CFD history showed 1.43, so the system uses the primary equity close for the validation anchor."
       },
@@ -79,10 +79,10 @@
       "industry": "光子学器件",
       "theme": "CPO / ELS 激光器",
       "stage": "pipeline 验证",
-      "price": 68.95,
-      "day": -1.78,
-      "month": 81.45,
-      "sinceAdded": 1342,
+      "price": 60.85,
+      "day": -11.75,
+      "month": 8.76,
+      "sinceAdded": 1173,
       "validation": {
         "date": "2024-11-12",
         "price": 4.78,
@@ -93,7 +93,7 @@
         "priceStatus": "manual_estimate",
         "priceSourceUrl": "https://stockanalysis.com/quote/sto/SIVE/history/",
         "anchorReliable": true,
-        "gainPct": 1342.47,
+        "gainPct": 1173.01,
         "tolerancePct": 2,
         "note": "Approximate validation-date close retained from the original thesis seed; accepted tolerance is 1-2% because this system uses anchors for research attribution, not trade execution."
       },
@@ -150,10 +150,10 @@
       "industry": "光子集成平台",
       "theme": "Optical Interposer",
       "stage": "PO / 商业化前夜",
-      "price": 12.29,
-      "day": -7.32,
-      "month": 72.61,
-      "sinceAdded": 65,
+      "price": 13.89,
+      "day": 13.02,
+      "month": 90.01,
+      "sinceAdded": 86,
       "validation": {
         "date": "2025-10-21",
         "price": 7.45,
@@ -164,7 +164,7 @@
         "priceStatus": "exact",
         "priceSourceUrl": null,
         "anchorReliable": true,
-        "gainPct": 64.97
+        "gainPct": 86.44
       },
       "marketCap": "约数十亿美元",
       "thesis": "平台级光子集成路线，想象空间大于单一组件；Lumilens PO 提供初级商业验证。",
@@ -219,9 +219,9 @@
       "industry": "半导体设备",
       "theme": "InP 激光设备",
       "stage": "订单验证",
-      "price": 57.64,
-      "day": -2.52,
-      "month": 15.63,
+      "price": 57.245,
+      "day": -0.69,
+      "month": 13.92,
       "sinceAdded": 11,
       "validation": {
         "date": "2026-04-24",
@@ -233,7 +233,7 @@
         "priceStatus": "exact",
         "priceSourceUrl": null,
         "anchorReliable": true,
-        "gainPct": 11.42
+        "gainPct": 10.66
       },
       "marketCap": "约 35 亿美元",
       "thesis": "InP 激光器扩产的上游设备铲子股，订单最硬，但收入确认与客户扩产周期较慢。",
@@ -288,10 +288,10 @@
       "industry": "光模块/光器件",
       "theme": "光模块 / 激光",
       "stage": "财报验证",
-      "price": 158.41,
-      "day": -6.28,
-      "month": -3.62,
-      "sinceAdded": 844,
+      "price": 185.67,
+      "day": 17.21,
+      "month": 1.18,
+      "sinceAdded": 1007,
       "validation": {
         "date": "2025-06-17",
         "price": 16.78,
@@ -302,7 +302,7 @@
         "priceStatus": "exact",
         "priceSourceUrl": null,
         "anchorReliable": true,
-        "gainPct": 844.04
+        "gainPct": 1006.5
       },
       "marketCap": "约百亿美元级",
       "thesis": "收入验证较硬，激光瓶颈与 AI 光模块需求直接受益；短期最大问题是 ATM 稀释压力。",
@@ -357,10 +357,10 @@
       "industry": "存储芯片",
       "theme": "HBM / DRAM",
       "stage": "财报爆发",
-      "price": 971,
-      "day": 5.14,
-      "month": 87.76,
-      "sinceAdded": 582,
+      "price": 1035.5,
+      "day": 6.64,
+      "month": 90.98,
+      "sinceAdded": 627,
       "validation": {
         "date": "2024-06-26",
         "price": 142.36,
@@ -371,7 +371,7 @@
         "priceStatus": "manual_estimate",
         "priceSourceUrl": "https://businessquant.com/metrics/mu/price",
         "anchorReliable": true,
-        "gainPct": 582.07,
+        "gainPct": 627.38,
         "tolerancePct": 2,
         "note": "Searchable historical sources show MU close near 142.36 on 2024-06-26; this replaces EODHD's one-year-history fallback anchor."
       },
@@ -427,10 +427,10 @@
       "industry": "特色晶圆代工",
       "theme": "SiC/GaN + Photonics",
       "stage": "低谷反转",
-      "price": 10.76,
-      "day": -5.28,
-      "month": 71.07,
-      "sinceAdded": 71,
+      "price": 9.645,
+      "day": -10.36,
+      "month": 52.13,
+      "sinceAdded": 53,
       "validation": {
         "date": "2026-04-30",
         "price": 6.29,
@@ -441,7 +441,7 @@
         "priceStatus": "exact",
         "priceSourceUrl": null,
         "anchorReliable": true,
-        "gainPct": 71.07
+        "gainPct": 53.34
       },
       "marketCap": "约 15 亿美元",
       "thesis": "传统汽车/工业拖累估值，wide-bandgap 与 microsystems/photonics 是潜在 AI 电力与光子期权。",
@@ -495,10 +495,10 @@
       "industry": "先进封装检测",
       "theme": "HBM / 先进封装检测",
       "stage": "订单验证",
-      "price": 171.66,
-      "day": -1.79,
-      "month": -10.56,
-      "sinceAdded": 42,
+      "price": 163.09,
+      "day": -4.99,
+      "month": -12.61,
+      "sinceAdded": 35,
       "validation": {
         "date": "2025-12-10",
         "price": 121.12,
@@ -509,7 +509,7 @@
         "priceStatus": "exact",
         "priceSourceUrl": null,
         "anchorReliable": true,
-        "gainPct": 41.73
+        "gainPct": 34.65
       },
       "marketCap": "约 80 亿美元",
       "thesis": "HBM 与 advanced packaging 检测量测，订单验证强，确定性高，但赔率不如材料小票。",
