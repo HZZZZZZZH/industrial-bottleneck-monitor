@@ -1200,13 +1200,36 @@ function mergeByTicker(baseItems, storedItems) {
   return merged;
 }
 
+function applyConsensusEstimates(consensusItems) {
+  const estimates = new Map((consensusItems || []).map((item) => [item.ticker, item]));
+  stocks = stocks.map((stock) => {
+    const estimate = estimates.get(stock.ticker);
+    if (!estimate) return stock;
+    return {
+      ...stock,
+      fundamentals: {
+        ...(stock.fundamentals || {}),
+        marketCapUsd: estimate.marketCapUsd || stock.fundamentals?.marketCapUsd || stock.marketCap,
+        consensusProfitUsdY1: estimate.consensusProfitUsdY1,
+        consensusProfitUsdY2: estimate.consensusProfitUsdY2,
+        consensusProfitUsdY3: estimate.consensusProfitUsdY3,
+        consensusSourceQuality: estimate.sourceQuality,
+        consensusSourceUrls: estimate.sourceUrls || [],
+        consensusUpdatedAt: estimate.updatedAt,
+        consensusNote: estimate.note,
+      },
+    };
+  });
+}
+
 async function loadPersistentData() {
-  const [watchlistPayload, discoveryPayload, validationPayload, eventsPayload, decisionsPayload] = await Promise.all([
+  const [watchlistPayload, discoveryPayload, validationPayload, eventsPayload, decisionsPayload, consensusPayload] = await Promise.all([
     fetchJsonFile("./data/watchlist.json"),
     fetchJsonFile("./data/discovery-pool.json"),
     fetchJsonFile("./data/validation-pool.json"),
     fetchJsonFile("./data/events.json"),
     fetchJsonFile("./data/decision-log.json"),
+    fetchJsonFile("./data/consensus-estimates.json"),
   ]);
 
   const watchlistItems = payloadItems(watchlistPayload);
@@ -1214,6 +1237,7 @@ async function loadPersistentData() {
   const validationItems = payloadItems(validationPayload);
   const eventItems = payloadItems(eventsPayload);
   const decisionItems = payloadItems(decisionsPayload);
+  const consensusItems = payloadItems(consensusPayload);
 
   if (watchlistItems) stocks = watchlistItems;
   if (discoveryItems) discoveryPool = discoveryItems;
@@ -1222,6 +1246,7 @@ async function loadPersistentData() {
   if (decisionItems) decisionLog = decisionItems;
 
   stocks = mergeByTicker(stocks, getStoredJson(storageKeys.watchlist));
+  if (consensusItems) applyConsensusEstimates(consensusItems);
   discoveryPool = mergeByTicker(discoveryPool, getStoredJson(storageKeys.discovery));
   validationPool = mergeByTicker(validationPool, getStoredJson(storageKeys.validation));
   validationEvents = getStoredJson(storageKeys.events) || validationEvents;
@@ -1403,8 +1428,9 @@ function fundamentalSnapshot(stock) {
   const valuation = forwardValuationBand(stock);
   return {
     marketCap: fundamentals.marketCapUsd || stock.marketCap || stock.marketCapUsd || "待补",
-    netProfit: fundamentals.netIncomeUsd || stock.profitUsd || "待补",
-    consensus3y: fundamentals.consensus3y || fundamentals.forward3yConsensus || valuation.consensusText || "待补",
+    consensusY1: fundamentals.consensusProfitUsdY1 || "待补",
+    consensusY2: fundamentals.consensusProfitUsdY2 || "待补",
+    consensusY3: fundamentals.consensusProfitUsdY3 || fundamentals.consensus3y || fundamentals.forward3yConsensus || valuation.consensusText || "待补",
   };
 }
 
@@ -1412,7 +1438,7 @@ function parseUsdAmount(value) {
   if (Number.isFinite(Number(value))) return Number(value);
   const text = `${value || ""}`.replace(/,/g, "").trim();
   if (!text || /待补|待更新|待核验|SEK|JPY|EUR|CHF/i.test(text)) return null;
-  const match = text.match(/(\d+(?:\.\d+)?)/);
+  const match = text.match(/-?\d+(?:\.\d+)?/);
   if (!match) return null;
   const number = Number(match[1]);
   if (!Number.isFinite(number)) return null;
@@ -2158,8 +2184,9 @@ function renderRows() {
           <td>
             <div class="usd-stack">
               <span>市值 ${fundamentals.marketCap}</span>
-              <span>净利润 ${fundamentals.netProfit}</span>
-              <span>三年预期 ${fundamentals.consensus3y}</span>
+              <span>27E利润 ${fundamentals.consensusY1}</span>
+              <span>28E利润 ${fundamentals.consensusY2}</span>
+              <span>29E利润 ${fundamentals.consensusY3}</span>
             </div>
           </td>
           <td>

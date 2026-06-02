@@ -8,6 +8,7 @@ const files = [
   ["decisions", "data/decision-log.json", ["id", "date", "ticker", "action", "reason"]],
   ["quotes", "data/quotes.json", ["ticker", "symbol", "date", "price"]],
   ["manual anchors", "data/manual-price-anchors.json", ["ticker", "symbol", "requestedDate", "priceDate", "price", "sourceUrl"]],
+  ["consensus estimates", "data/consensus-estimates.json", ["ticker", "marketCapUsd", "sourceQuality", "sourceUrls", "note"]],
 ];
 
 function itemsFromPayload(payload, filePath) {
