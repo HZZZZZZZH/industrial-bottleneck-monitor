@@ -98,6 +98,14 @@ Visible indicators should be these six tiers:
 
 `资金优先级` is no longer a visible peer indicator. It is the underlying decision logic that combines the six tiers into action/status: add, hold, wait for pullback, observe, reduce, or clear.
 
+The visible `状态` is the weighted result of these six factors, with each factor weight adjustable in four levels: `低`, `中`, `高`, `极高`. Default posture:
+
+- `赔率档` and `兑现档`: highest weights, because odds define bet quality and verification defines speed.
+- `基本档`, `估值档`, and `风险档`: high weights, because fundamentals define downside floor, valuation defines upside ceiling, and risk can block entry.
+- `情绪档`: medium by default, but can become decisive when true mass-awareness heat appears.
+
+Hard red lines still override weights. Do not let user-adjusted weights cancel demand disproval, extreme valuation overdraw, true euphoric climax, or major company-specific risks.
+
 `赔率 = 空间 × 时间 × 概率 × 验证强度 × 估值未透支程度`
 
 Use these odds tiers:

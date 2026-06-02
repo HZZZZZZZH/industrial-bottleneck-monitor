@@ -1,16 +1,17 @@
 const factors = [
-  { key: "validation", label: "验证强度", level: 4 },
-  { key: "scarcity", label: "稀缺性", level: 4 },
-  { key: "wave", label: "时代 Beta", level: 3 },
-  { key: "mismatch", label: "供需错配", level: 3 },
-  { key: "time", label: "转收入速度", level: 3 },
+  { key: "fundamental", label: "基本档", level: 3, help: "决定下限：行业空间、稀缺环节、供需错配和收入弹性。" },
+  { key: "demand", label: "兑现档", level: 4, help: "决定速度：订单、backlog、财报、价格和指引能否连续验证。" },
+  { key: "valuation", label: "估值档", level: 3, help: "决定上限：未来 1/2/3 年利润和行业 PS 分位是否已经透支。" },
+  { key: "odds", label: "赔率档", level: 4, help: "决定下注价值：行业空间、时间效率、翻倍概率和市场验证。" },
+  { key: "risk", label: "风险档", level: 3, help: "负向约束：硬风险、未知信息风险和 thesis 证伪风险。" },
+  { key: "emotion", label: "情绪档", level: 2, help: "负向约束：真全民皆知、官方报道、搜索扩散和散户狂热。" },
 ];
 
 const factorLevels = [
   { level: 1, label: "低", weight: 8, help: "只做背景" },
-  { level: 2, label: "中", weight: 16, help: "影响排序" },
+  { level: 2, label: "中", weight: 16, help: "影响状态" },
   { level: 3, label: "高", weight: 24, help: "核心因子" },
-  { level: 4, label: "极高", weight: 32, help: "一票否决" },
+  { level: 4, label: "极高", weight: 32, help: "主导状态" },
 ];
 
 const baseWeights = Object.fromEntries(
@@ -1031,6 +1032,7 @@ const storageKeys = {
   validation: "industrial-monitor.validation.v1",
   events: "industrial-monitor.events.v1",
   decisions: "industrial-monitor.decisions.v1",
+  stateWeights: "industrial-monitor.state-weights.v1",
 };
 
 const embeddedQuoteFallbacks = [
@@ -1177,6 +1179,23 @@ function setStoredJson(key, value) {
   }
 }
 
+function normalizeStateWeights(storedWeights) {
+  return factors.reduce((nextWeights, factor) => {
+    const stored = Number(storedWeights?.[factor.key]);
+    const validLevel = factorLevels.find((level) => level.weight === stored);
+    nextWeights[factor.key] = validLevel ? validLevel.weight : baseWeights[factor.key];
+    return nextWeights;
+  }, {});
+}
+
+function loadStateWeights() {
+  weights = normalizeStateWeights(getStoredJson(storageKeys.stateWeights));
+}
+
+function saveStateWeights() {
+  setStoredJson(storageKeys.stateWeights, weights);
+}
+
 async function fetchJsonFile(path) {
   try {
     const response = await fetch(path, { cache: "no-store" });
@@ -1321,10 +1340,30 @@ function factorLevelForWeight(weight) {
 
 function weightedScore(stock) {
   const totalWeight = Object.values(weights).reduce((sum, value) => sum + Number(value), 0);
-  const score = factors.reduce((sum, factor) => {
-    return sum + stock.scores[factor.key] * Number(weights[factor.key]);
-  }, 0);
+  const scores = stateFactorScores(stock);
+  const score = factors.reduce((sum, factor) => sum + scores[factor.key] * Number(weights[factor.key]), 0);
   return Math.round(score / totalWeight);
+}
+
+function valuationFavorabilityScore(stock) {
+  const valuation = forwardValuationBand(stock);
+  if (!valuation.available) return 50;
+  if (valuation.risk >= 90) return 8;
+  if (valuation.risk >= 72) return 30;
+  if (valuation.risk >= 40) return 72;
+  if (valuation.percentile <= 15) return 62;
+  return 82;
+}
+
+function stateFactorScores(stock) {
+  return {
+    fundamental: fundamentalScore(stock),
+    demand: demandProbabilityScore(stock),
+    valuation: valuationFavorabilityScore(stock),
+    odds: oddsScore(stock),
+    risk: 100 - riskScore(stock),
+    emotion: 100 - sellHeatScore(stock),
+  };
 }
 
 function fundamentalScore(stock) {
@@ -1610,13 +1649,7 @@ function valuationSellSignal(stock) {
 }
 
 function valueScore(stock) {
-  const fundamental = fundamentalScore(stock);
-  const demand = demandProbabilityScore(stock);
-  const upside = upsideScore(stock);
-  const time = timeScore(stock);
-  const risk = riskScore(stock);
-  const marketProof = clamp(validationGain(stock) / 8, 0, 18);
-  return Math.round(clamp(demand * 0.3 + fundamental * 0.28 + upside * 0.24 + time * 0.1 + marketProof - risk * 0.08));
+  return weightedScore(stock);
 }
 
 function lightForStock(stock) {
@@ -1854,7 +1887,7 @@ function renderFactorControls() {
                     class="tier-button ${level.level === activeLevel.level ? "active" : ""}"
                     data-factor="${factor.key}"
                     data-weight="${level.weight}"
-                    title="${level.help}"
+                    title="${factor.help} 权重：${level.help}"
                   >${level.label}</button>
                 `
               )
@@ -1869,6 +1902,7 @@ function renderFactorControls() {
   document.querySelectorAll(".tier-button").forEach((button) => {
     button.addEventListener("click", () => {
       weights[button.dataset.factor] = Number(button.dataset.weight);
+      saveStateWeights();
       renderFactorControls();
       render();
     });
@@ -2957,6 +2991,7 @@ document.querySelectorAll(".pool-tab").forEach((button) => {
 
 document.querySelector("#resetWeights").addEventListener("click", () => {
   weights = { ...baseWeights };
+  saveStateWeights();
   renderFactorControls();
   render();
 });
@@ -2983,6 +3018,7 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+loadStateWeights();
 renderFactorControls();
 renderRules();
 renderEntryCriteria();
