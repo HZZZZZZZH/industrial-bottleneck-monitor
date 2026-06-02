@@ -15,7 +15,7 @@
         </div>
         <div class="top-actions">
           <select id="sortMode" class="select-control" aria-label="排序">
-            <option value="score">资金优先级</option>
+            <option value="score">赔率档</option>
             <option value="fundamental">基本面</option>
             <option value="demand">需求兑现</option>
             <option value="media">媒体热度</option>
@@ -168,8 +168,16 @@
                 <strong id="mediaScore">--</strong>
               </div>
               <div>
-                <span>资金优先级</span>
+                <span>估值档</span>
                 <strong id="compositeScore">--</strong>
+              </div>
+              <div>
+                <span>赔率档</span>
+                <strong id="oddsTierScore">--</strong>
+              </div>
+              <div>
+                <span>风险档</span>
+                <strong id="riskTierScore">--</strong>
               </div>
             </div>
           </div>
@@ -384,6 +392,6 @@
       </section>
     </div>
 
-    <script src="./app.js?v=20260601-pricefix"></script>
+    <script src="./app.js?v=20260602-six-tiers"></script>
   </body>
 </html>

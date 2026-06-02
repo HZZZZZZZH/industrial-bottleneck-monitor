@@ -34,9 +34,14 @@ const scoringModels = [
     formula: "四档：冷门 / 圈层拥挤 / 官方升温 / 全民皆知",
   },
   {
-    title: "资金优先级",
-    body: "衡量现在这笔钱该不该打进去：需求兑现、基本面、翻倍赔率、收入速度和市场验证为正因子；硬风险和未知风险为负因子。",
-    formula: "四档：暂不介入 / 小仓期权 / 回调买点 / 可打主仓",
+    title: "赔率档",
+    body: "衡量时间和空间是否值得下注：可比分析、1 年内涨幅空间、市场验证后的再涨概率、估值未透支程度共同决定。",
+    formula: "五档：负赔率 / 平庸 / 普通 / 优秀 / 极佳",
+  },
+  {
+    title: "估值档",
+    body: "用未来 3 年一致预期判断市值是否透支：交易到第 1 年利润区间是低估，第 2 年是合理，第 3 年是透支。",
+    formula: "五档：待补 / 低估 / 合理 / 透支 / 极端透支",
   },
 ];
 
@@ -221,7 +226,7 @@ const weeklyScanSteps = [
   },
   {
     step: "组合动作评估",
-    input: "基本面、需求兑现、资金优先级、风险、情绪、技术面",
+    input: "基本档、兑现档、估值档、赔率档、风险档、情绪档、技术面",
     filter: "只能输出加仓、持仓、减仓、清仓",
     output: "组合候选或淘汰",
   },
@@ -923,7 +928,7 @@ const portfolioPlan = {
   pnlSeries: [0, 0, 0, 0, 0, 0],
   rules: [
     "组合不是一次性满仓：首批只按模型仓执行，剩余资金等 20D/50D、RSI、量能和公司验证信号共同触发。",
-    "买入优先级：需求验证 = 基本面 > 资金优先级 > 风险；技术面只负责确认价格节奏，不推翻基本面证伪。",
+    "买入优先级：需求验证 = 基本面 > 赔率档 > 估值档 > 风险；技术面只负责确认价格节奏，不推翻基本面证伪。",
     "强趋势票只低吸或突破后回踩，不在单日放量长阳时追满目标仓。",
     "任何公司专属红灯触发时，先降到观察仓；若需求被证伪，不用等技术反弹。",
   ],
@@ -1275,6 +1280,14 @@ function tierForScore(score, type = "normal") {
     return { label: "暂不介入", className: "tier-1", width: 25 };
   }
 
+  if (type === "odds") {
+    if (score >= 82) return { label: "极佳", className: "tier-4", width: 100 };
+    if (score >= 66) return { label: "优秀", className: "tier-3", width: 75 };
+    if (score >= 50) return { label: "普通", className: "tier-2", width: 55 };
+    if (score >= 32) return { label: "平庸", className: "tier-2", width: 35 };
+    return { label: "负赔率", className: "tier-1", width: 20 };
+  }
+
   if (type === "fundamental") {
     if (score >= 78) return { label: "极佳", className: "tier-4", width: 100 };
     if (score >= 62) return { label: "优秀", className: "tier-3", width: 75 };
@@ -1363,6 +1376,36 @@ function upsideScore(stock) {
         validationBoost +
         marketProofBoost -
         unknownPenalty
+    )
+  );
+}
+
+function oddsScore(stock) {
+  const gain = validationGain(stock);
+  const fundamental = fundamentalScore(stock);
+  const demand = demandProbabilityScore(stock);
+  const valuation = forwardValuationBand(stock);
+  const unknownPenalty = unknownInformationRiskScore(stock) * 0.24;
+  const valuationPenalty = valuation.available ? valuation.risk * 0.24 : 0;
+  const marketProofBoost =
+    demand >= 65 && fundamental >= 62 && gain >= 90
+      ? clamp(Math.log10(Math.max(2, gain / 50)) * 18, 8, 26)
+      : 0;
+  const comparableBoost =
+    stock.ticker === "MU" || /HBM|memory|DRAM|内存|存储/i.test(`${stock.theme} ${stock.thesis}`) ? 12 : 0;
+
+  return Math.round(
+    clamp(
+      fundamental * 0.18 +
+        demand * 0.18 +
+        stock.scores.scarcity * 0.18 +
+        stock.scores.wave * 0.15 +
+        stock.scores.mismatch * 0.14 +
+        timeScore(stock) * 0.12 +
+        marketProofBoost +
+        comparableBoost -
+        unknownPenalty -
+        valuationPenalty
     )
   );
 }
@@ -1500,7 +1543,7 @@ function forwardValuationBand(stock) {
   if (marketCap < ranges[0].low) {
     return {
       available: true,
-      label: "1年低估",
+      label: "低估排查",
       percentile: 10,
       risk: 35,
       consensusText,
@@ -1512,9 +1555,10 @@ function forwardValuationBand(stock) {
     if (marketCap <= range.high) {
       const inBand = clamp(((marketCap - range.low) / (range.high - range.low)) * 100, 0, 100);
       const basePercentile = { 1: 20, 2: 50, 3: 80 }[range.year];
+      const label = { 1: "低估", 2: "合理", 3: "透支" }[range.year];
       return {
         available: true,
-        label: `${range.year}年${range.year === 3 ? "透支" : "正常"}`,
+        label,
         percentile: Math.round(clamp(basePercentile + inBand * 0.18)),
         risk: range.year === 3 ? 72 : range.year === 2 ? 40 : 24,
         consensusText,
@@ -1528,12 +1572,22 @@ function forwardValuationBand(stock) {
 
   return {
     available: true,
-    label: "超过3年",
+    label: "极端透支",
     percentile: 100,
     risk: 95,
     consensusText,
     note: "当前市值已经超过未来第 3 年 40 倍利润，属于明确估值卖出信号。",
   };
+}
+
+function valuationTier(stock) {
+  const valuation = forwardValuationBand(stock);
+  if (!valuation.available) return { label: "待补", className: "tier-2", width: 35, note: valuation.note };
+  if (valuation.risk >= 90) return { label: "极端透支", className: "tier-1", width: 100, note: valuation.note };
+  if (valuation.risk >= 72) return { label: "透支", className: "tier-2", width: 82, note: valuation.note };
+  if (valuation.risk >= 40) return { label: "合理", className: "tier-3", width: 58, note: valuation.note };
+  if (valuation.percentile <= 15) return { label: "低估排查", className: "tier-3", width: 42, note: valuation.note };
+  return { label: "低估", className: "tier-4", width: 28, note: valuation.note };
 }
 
 function valuationOverdrawRiskScore(stock) {
@@ -1662,7 +1716,8 @@ function currentDecisionSnapshot(stock) {
   const demand = tierForScore(demandProbabilityScore(stock), "demand");
   const risk = tierForScore(riskScore(stock), "risk");
   const emotion = tierForScore(sellHeatScore(stock), "emotion");
-  const value = tierForScore(valueScore(stock), "value");
+  const odds = tierForScore(oddsScore(stock), "odds");
+  const valuation = valuationTier(stock);
   const tech = technicalStatus(stock);
 
   return {
@@ -1674,9 +1729,10 @@ function currentDecisionSnapshot(stock) {
     source: "model_snapshot",
     fundamentalTier: fundamental.label,
     demandTier: demand.label,
+    valuationTier: valuation.label,
+    oddsTier: odds.label,
     riskTier: risk.label,
     sentimentTier: emotion.label,
-    valueTier: value.label,
     technicalStatus: tech.label,
     validationDate: stock.validation?.date || "",
     validationGain: validationGain(stock),
@@ -1919,8 +1975,8 @@ function renderDecisionLog() {
           <td>${item.reason || "--"}</td>
           <td>
             <div class="decision-snapshot">
-              <strong>${item.demandTier || "--"} · ${item.fundamentalTier || "--"} · ${item.valueTier || "--"}</strong>
-              <span>风险 ${item.riskTier || "--"} · 情绪 ${item.sentimentTier || "--"} · 技术 ${item.technicalStatus || "--"}</span>
+              <strong>${item.fundamentalTier || "--"} · ${item.demandTier || "--"} · 估值 ${item.valuationTier || "--"}</strong>
+              <span>赔率 ${item.oddsTier || item.valueTier || "--"} · 风险 ${item.riskTier || "--"} · 情绪 ${item.sentimentTier || "--"}</span>
               <span>入池 ${item.validationDate || "--"} · 验证后 ${gain} · 仓位 ${item.portfolioExposure || "--"}</span>
             </div>
           </td>
@@ -1989,7 +2045,7 @@ function sortedStocks() {
     if (sortMode === "media") return sellHeatScore(b) - sellHeatScore(a);
     if (sortMode === "risk") return riskScore(b) - riskScore(a);
     if (sortMode === "move") return b.month - a.month;
-    return valueScore(b) - valueScore(a);
+    return oddsScore(b) - oddsScore(a);
   });
 }
 
@@ -2017,7 +2073,7 @@ function updatePoolChrome() {
 function renderPoolHead() {
   const headers =
     activePool === "watch"
-      ? ["股票", "行业/领域", "基本面快照", "价格快照", "验证入池/涨幅", "基本面档", "兑现档", "资金优先级", "风险档", "情绪档", "状态"]
+      ? ["股票", "行业/领域", "基本面快照", "价格快照", "验证入池/涨幅", "基本档", "兑现档", "估值档", "赔率档", "风险档", "情绪档", "状态"]
       : ["股票", "国家/交易所", "行业/领域", "美元口径", "发现/验证线索", "核心追踪指标", "下一步", "操作"];
 
   document.querySelector("#poolHeadRow").innerHTML = headers.map((header) => `<th>${header}</th>`).join("");
@@ -2150,12 +2206,12 @@ function renderRows() {
 
   document.querySelector("#watchRows").innerHTML = sortedStocks()
     .map((stock) => {
-      const score = valueScore(stock);
       const fundamental = fundamentalScore(stock);
       const demand = demandProbabilityScore(stock);
       const fundamentalTier = tierForScore(fundamental, "fundamental");
       const demandTier = tierForScore(demand, "demand");
-      const valueTier = tierForScore(score, "value");
+      const stockValuationTier = valuationTier(stock);
+      const oddsTier = tierForScore(oddsScore(stock), "odds");
       const riskTier = tierForScore(riskScore(stock), "risk");
       const mediaTier = tierForScore(sellHeatScore(stock), "emotion");
       const action = actionForStock(stock);
@@ -2211,7 +2267,10 @@ function renderRows() {
             <span class="score-pill ${demandTier.className}">${demandTier.label}</span>
           </td>
           <td>
-            <span class="score-pill ${valueTier.className}">${valueTier.label}</span>
+            <span class="score-pill ${stockValuationTier.className}">${stockValuationTier.label}</span>
+          </td>
+          <td>
+            <span class="score-pill ${oddsTier.className}">${oddsTier.label}</span>
           </td>
           <td>
             <span class="score-pill ${riskTier.className}">${riskTier.label}</span>
@@ -2253,8 +2312,10 @@ function renderDetails(stock) {
   document.querySelector("#validationMove").textContent = formatMove(validationGain(stock));
   document.querySelector("#fundamentalScore").textContent = tierForScore(fundamentalScore(stock), "fundamental").label;
   document.querySelector("#demandScore").textContent = tierForScore(demandProbabilityScore(stock), "demand").label;
+  document.querySelector("#compositeScore").textContent = valuationTier(stock).label;
+  document.querySelector("#oddsTierScore").textContent = tierForScore(oddsScore(stock), "odds").label;
+  document.querySelector("#riskTierScore").textContent = tierForScore(riskScore(stock), "risk").label;
   document.querySelector("#mediaScore").textContent = tierForScore(sellHeatScore(stock), "emotion").label;
-  document.querySelector("#compositeScore").textContent = tierForScore(valueScore(stock), "value").label;
 
   const traffic = document.querySelector("#trafficLight");
   traffic.className = `traffic-light ${light}`;
@@ -2302,20 +2363,20 @@ function renderDetails(stock) {
 
 function renderScoreBreakdown(stock) {
   const valuation = forwardValuationBand(stock);
+  const stockValuationTier = valuationTier(stock);
   const rows = [
-    { label: "基本面", value: fundamentalScore(stock), note: "行业 Beta / 错配 / 弹性 / 稀缺价值链", type: "fundamental" },
-    { label: "需求兑现", value: demandProbabilityScore(stock), note: "领先指标能否进入财报", type: "demand" },
-    { label: "翻倍赔率", value: upsideScore(stock), note: "稀缺性、时代 Beta 和市场验证后的上行空间", type: "normal" },
+    { label: "基本档", value: fundamentalScore(stock), note: "行业 Beta / 错配 / 弹性 / 稀缺价值链", type: "fundamental" },
+    { label: "兑现档", value: demandProbabilityScore(stock), note: "领先指标能否进入财报", type: "demand" },
     {
-      label: "三年估值分位",
+      label: "估值档",
       value: valuation.available ? valuation.percentile : 0,
       note: valuation.note,
       type: valuation.available ? "risk" : "normal",
-      display: valuation.available ? `${valuation.label} · ${valuation.percentile}%` : "待补",
+      display: valuation.available ? `${stockValuationTier.label} · ${valuation.percentile}%` : "待补",
     },
-    { label: "真实热度", value: sellHeatScore(stock), note: "官方报道、搜索和标的覆盖面的全民化程度", type: "emotion" },
-    { label: "未知风险", value: unknownInformationRiskScore(stock), note: verificationMomentumNote(stock), type: "risk" },
-    { label: "硬风险", value: riskScore(stock), note: "公司专属证伪逻辑", type: "risk" },
+    { label: "赔率档", value: oddsScore(stock), note: "时间/空间/概率：1 年翻倍、1 年多倍或 1-3 年翻倍", type: "odds" },
+    { label: "风险档", value: riskScore(stock), note: `硬风险 + 未知风险。${verificationMomentumNote(stock)}`, type: "risk" },
+    { label: "情绪档", value: sellHeatScore(stock), note: "官方报道、搜索、散户入场和标的覆盖面的全民化程度", type: "emotion" },
   ];
 
   document.querySelector("#scoreBreakdown").innerHTML = rows
@@ -2649,7 +2710,7 @@ function executionQueueForStock(stock) {
   const heat = sellHeatScore(stock);
   const circleHeat = circleCrowdingScore(stock);
   const unknownRisk = unknownInformationRiskScore(stock);
-  const valueTier = tierForScore(valueScore(stock), "value");
+  const oddsTier = tierForScore(oddsScore(stock), "odds");
   const gain = validationGain(stock);
   const demand = demandProbabilityScore(stock);
   const fundamental = fundamentalScore(stock);
@@ -2673,7 +2734,7 @@ function executionQueueForStock(stock) {
     };
   }
 
-  if (valueTier.label === "可打主仓" && heat >= 78 && demand >= 75) {
+  if ((oddsTier.label === "极佳" || oddsTier.label === "优秀") && heat >= 78 && demand >= 75) {
     return {
       priority: 3,
       tag: "主线持仓",
@@ -2691,7 +2752,7 @@ function executionQueueForStock(stock) {
     };
   }
 
-  if (action.label === "加仓" || valueTier.label === "可打主仓") {
+  if (action.label === "加仓" || oddsTier.label === "极佳") {
     return {
       priority: 5,
       tag: "加仓候选",
@@ -2732,7 +2793,7 @@ function renderExecutionQueue() {
       stock,
       action: actionForStock(stock),
       queue: executionQueueForStock(stock),
-      value: valueScore(stock),
+      value: oddsScore(stock),
       heat: sellHeatScore(stock),
       unknownRisk: unknownInformationRiskScore(stock),
       gain: validationGain(stock),
@@ -2756,7 +2817,7 @@ function renderExecutionQueue() {
           <p>${item.stock.name} · ${item.stock.theme}</p>
           <p>${item.queue.note}</p>
           <div class="execution-card-meta">
-            <span class="score-pill ${tierForScore(item.value, "value").className}">${tierForScore(item.value, "value").label}</span>
+            <span class="score-pill ${tierForScore(item.value, "odds").className}">${tierForScore(item.value, "odds").label}</span>
             <span class="company">验证后 ${formatMove(item.gain)}</span>
           </div>
         </button>

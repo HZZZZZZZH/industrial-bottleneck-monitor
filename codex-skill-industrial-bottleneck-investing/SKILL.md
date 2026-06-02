@@ -83,13 +83,38 @@ Use four tiers:
 
 Demand verification should be weighted at least as strongly as fundamentals.
 
-### Value For Money
+### Odds And Capital Priority
 
-The user's definition:
+The dashboard separates visible research indicators from the final action.
 
-`性价比 = 时间 + 赔率`
+Visible indicators should be these six tiers:
 
-Assess using comparable companies, optimistic future valuation, current market cap, expected time to confirmation, and upside/downside. Do not only say a company is good; decide whether the expected return over the next 6-24 months is worth the opportunity cost.
+- `基本档`: fundamental quality.
+- `兑现档`: demand verification and conversion.
+- `估值档`: whether current market cap is low, reasonable, overdrawn, or extremely overdrawn against future consensus.
+- `赔率档`: time/space/probability odds.
+- `风险档`: hard company risks plus unknown-information risk.
+- `情绪档`: true mass-awareness heat, separated from niche circle crowding.
+
+`资金优先级` is no longer a visible peer indicator. It is the underlying decision logic that combines the six tiers into action/status: add, hold, wait for pullback, observe, reduce, or clear.
+
+`赔率 = 空间 × 时间 × 概率 × 验证强度 × 估值未透支程度`
+
+Use these odds tiers:
+
+- `极佳`: high probability of +100% within 1 year, or medium probability of +300% within 1 year.
+- `优秀`: medium probability of +100% within 1 year for small caps, or high probability of +50-100% within 1 year.
+- `普通`: high probability of +100% over 1-3 years, but time efficiency is ordinary.
+- `平庸`: space, time, or probability is not compelling enough.
+- `负赔率`: valuation is severely overdrawn, PS is near historical top 1-2% for the industry, or further upside mainly needs extreme sentiment.
+
+Assess using comparable companies, optimistic future valuation, current market cap, expected time to confirmation, and upside/downside. Do not only say a company is good; decide whether the expected return over the next 6-24 months is worth the opportunity cost. Market validation from a large post-verification move is a positive quality signal, not an automatic penalty.
+
+Examples:
+
+- MU-like large-cap HBM leaders can still be valuable if the whole scarce HBM/memory complex can plausibly rerate toward NVIDIA-scale market value. If NVIDIA is about a $5T company and SK hynix + Micron + Samsung memory value can plausibly approach that scale, a $1T-class MU can still have +100% 1-year odds when memory shortage and earnings surprises keep compounding.
+- SIVE/AXTI-like stocks with large verified moves are high-quality market-validated targets. A just-verified stock that quickly rises 100%+ may have higher probability of another 100-300% if valuation is still reasonable. The core action is usually to wait for pullbacks and sell only near true euphoric climax or valuation overdraw.
+- VECO/POET/CAMT-like stocks with hard AI-era verification but weak post-verification price response require unknown-risk investigation before buying.
 
 ### Risk Standard
 
@@ -124,6 +149,18 @@ Sentiment is high risk when ordinary people broadly know the stock and want to b
 
 If a stock has strong fundamentals and demand verification but rises less than 1x within one month after verification, raise its risk level. This may signal an unknown issue, weak market belief, dilution risk, or hidden timing problem.
 
+### Forward Valuation
+
+Use future 3-year consensus profit expectations to judge valuation overdraw. If the current date is in H1, normally use current year / next year / year+2; if in H2, normally use next year / year+2 / year+3. For the current 2026 data file, Y1/Y2/Y3 maps to 2027/2028/2029 unless the data file is updated.
+
+Decision logic:
+
+- If current market cap trades at 30-40x year-1 expected profit, show `低估`. If a verified excellent company still trades there, also investigate whether the market knows something hidden.
+- If current market cap trades at 30-40x year-2 expected profit, show `合理`.
+- If current market cap trades at 30-40x year-3 expected profit, show `透支`.
+- If current market cap is above 40x year-3 expected profit, show `极端透支` and treat it as a clear valuation sell signal.
+- If PS reaches the industry's historical top 1-2% percentile, show at least `透支`; if the stock also lacks true mass awareness, reduce odds because further upside needs hard sentiment acceleration.
+
 ## Data Rules
 
 Do not fabricate historical anchor prices. If exact APIs are rate-limited, use fast web verification or user-provided sources. A 1-2% difference is acceptable for anchor price purposes, but the date, ticker, and split-adjustment logic must be directionally correct.
@@ -146,7 +183,7 @@ The project is a static dashboard deployed to Netlify. It has:
 
 - watchlist, discovery pool, validation pool
 - portfolio box for a 100,000 USD simulated allocation
-- fundamental, demand, value-for-money, risk, and sentiment tiers
+- six visible tiers: `基本档`, `兑现档`, `估值档`, `赔率档`, `风险档`, `情绪档`
 - verification date, anchor price, and post-verification return
 - manual price-anchor overrides
 - sample EODHD daily quote fetching
