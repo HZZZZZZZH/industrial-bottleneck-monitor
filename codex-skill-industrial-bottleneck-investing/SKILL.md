@@ -159,14 +159,16 @@ If a stock has strong fundamentals and demand verification but rises less than 1
 
 ### Forward Valuation
 
-Use future 3-year consensus profit expectations to judge valuation overdraw. If the current date is in H1, normally use current year / next year / year+2; if in H2, normally use next year / year+2 / year+3. For the current 2026 data file, Y1/Y2/Y3 maps to 2027/2028/2029 unless the data file is updated.
+Use future 3-year profit and revenue expectations to judge valuation overdraw from both P/E and P/S. If the current date is in H1, normally use current year / next year / year+2; if in H2, normally use next year / year+2 / year+3. For the current 2026 data file, Y1/Y2/Y3 maps to 2027/2028/2029 unless the data file is updated.
+
+When 2029E is not available from public sources, ask a research sub-agent to derive a model estimate from public 2027/2028 consensus, company guidance, analyst reports, order/run-rate evidence, and industry growth assumptions. Store it only as `model-derived-*` source quality and explain the assumption. Do not present model-derived figures as hard consensus.
 
 Decision logic uses four valuation tiers:
 
-- If current market cap is reasonable against Y1 expected profit, show `低估`. If a verified excellent company still trades there, also investigate whether the market knows something hidden.
-- If current market cap is not reasonable against Y1 but is reasonable against Y2 expected profit, show `正常`.
-- If current market cap is not reasonable against Y2 but is reasonable against Y3 expected profit, show `高估`.
-- If current market cap is not reasonable even against Y3 expected profit, show `Meme` and treat it as a clear valuation sell/reduce signal.
+- If current market cap is reasonable against Y1 expected profit/revenue, show `低估`. If a verified excellent company still trades there, also investigate whether the market knows something hidden.
+- If current market cap is not reasonable against Y1 but is reasonable against Y2 expected profit/revenue, show `正常`.
+- If current market cap is not reasonable against Y2 but is reasonable against Y3 expected profit/revenue, show `高估`.
+- If current market cap is not reasonable even against Y3 expected profit/revenue, show `Meme` and treat it as a clear valuation sell/reduce signal.
 - If Y3 revenue / PS data is available and current market cap is not reasonable even against Y3 revenue, also classify as `Meme`. If PS reaches the industry's historical top 1-2% percentile, treat it as at least `高估`, and usually `Meme` when further upside mainly depends on extreme sentiment.
 
 ## Data Rules

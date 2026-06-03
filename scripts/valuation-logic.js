@@ -92,11 +92,27 @@
       .map((revenue, index) => ({ year: index + 1, revenue }))
       .filter(({ revenue }) => Number.isFinite(revenue) && revenue > 0);
     const farthestRevenue = usableRevenues[usableRevenues.length - 1];
-    const consensusText = farthest
-      ? `Y${farthest.year} profit ${formatUsdCompact(farthest.profit)}`
-      : farthestRevenue
-        ? `Y${farthestRevenue.year} revenue ${formatUsdCompact(farthestRevenue.revenue)}`
-        : "";
+    const farthestConsensusYear = Math.max(farthest?.year || 0, farthestRevenue?.year || 0);
+    const consensusPieces = [];
+    if (farthestConsensusYear) {
+      const profit = profits[farthestConsensusYear - 1];
+      const revenue = revenues[farthestConsensusYear - 1];
+      if (Number.isFinite(profit) && profit !== 0) consensusPieces.push(`Y${farthestConsensusYear} profit ${formatUsdCompact(profit)}`);
+      if (Number.isFinite(revenue) && revenue > 0) consensusPieces.push(`Y${farthestConsensusYear} revenue ${formatUsdCompact(revenue)}`);
+    }
+    const consensusText = consensusPieces.join(" / ");
+
+    function multipleText(year, profit) {
+      const pieces = [];
+      if (Number.isFinite(profit) && profit > 0) {
+        pieces.push(`Y${year} PE 约 ${Number((marketCap / profit).toFixed(1))}x`);
+      }
+      const revenue = revenues[year - 1];
+      if (Number.isFinite(revenue) && revenue > 0) {
+        pieces.push(`Y${year} PS 约 ${Number((marketCap / revenue).toFixed(1))}x`);
+      }
+      return pieces.length ? `（${pieces.join("，")}）` : "";
+    }
 
     function y3RevenueMeme() {
       const y3Revenue = revenues[2];
@@ -135,16 +151,18 @@
         const percentile = year === 1 && marketCap < low ? 12 : Math.round(clamp({ 1: 20, 2: 50, 3: 80 }[year] + inBand * 0.18));
         let note = "";
 
+        const multipleNote = multipleText(year, profit);
+
         if (year === 1 && marketCap < low) {
-          note = "当前市值低于未来第 1 年 30 倍利润，归入低估；同时需要排查是否存在市场知道而我们还没看到的问题。";
+          note = `当前市值低于未来第 1 年 30 倍利润${multipleNote}，归入低估；同时需要排查是否存在市场知道而我们还没看到的问题。`;
         } else if (year === 1) {
-          note = "当前市值主要交易到未来第 1 年 30-40 倍利润区间，按框架归入低估。";
+          note = `当前市值主要交易到未来第 1 年 30-40 倍利润区间${multipleNote}，按框架归入低估。`;
         } else if (year === 2 && profits[0] > 0) {
-          note = "当前市值已超过未来第 1 年 40 倍利润，但仍在未来第 2 年 30-40 倍利润区间，按框架归入正常。";
+          note = `当前市值已超过未来第 1 年 40 倍利润，但仍在未来第 2 年 30-40 倍利润区间${multipleNote}，按框架归入正常。`;
         } else if (year === 2) {
-          note = "未来第 1 年利润仍未转正，当前市值主要交易到未来第 2 年 30-40 倍利润区间，按框架归入正常。";
+          note = `未来第 1 年利润仍未转正，当前市值主要交易到未来第 2 年 30-40 倍利润区间${multipleNote}，按框架归入正常。`;
         } else {
-          note = "当前市值已经交易到未来第 3 年 30-40 倍利润区间，按框架归入高估。";
+          note = `当前市值已经交易到未来第 3 年 30-40 倍利润区间${multipleNote}，按框架归入高估。`;
         }
 
         return {

@@ -1,7 +1,7 @@
 const factors = [
   { key: "fundamental", label: "基本档", level: 3, help: "决定下限：行业空间、稀缺环节、供需错配和收入弹性。" },
   { key: "demand", label: "兑现档", level: 4, help: "决定速度：订单、backlog、财报、价格和指引能否连续验证。" },
-  { key: "valuation", label: "估值档", level: 3, help: "决定上限：未来 1/2/3 年利润和行业 PS 分位是否已经透支。" },
+  { key: "valuation", label: "估值档", level: 3, help: "决定上限：未来 1/2/3 年利润/营收对应的 P/E、P/S 是否已经透支。" },
   { key: "odds", label: "赔率档", level: 4, help: "决定下注价值：行业空间、时间效率、翻倍概率和市场验证。" },
   { key: "risk", label: "风险档", level: 3, help: "负向约束：硬风险、未知信息风险和 thesis 证伪风险。" },
   { key: "emotion", label: "情绪档", level: 2, help: "负向约束：真全民皆知、官方报道、搜索扩散和散户狂热。" },
@@ -42,7 +42,7 @@ const scoringModels = [
   },
   {
     title: "估值档",
-    body: "用未来 3 年一致预期判断市值是否已经进入 Meme 区：Y1 合理是低估，Y2 合理是正常，Y3 合理是高估，Y3 仍不合理就是 Meme。",
+    body: "用未来 3 年利润和营收预测判断市值是否已经进入 Meme 区：Y1 合理是低估，Y2 合理是正常，Y3 合理是高估，Y3 的 P/E 或 P/S 仍不合理就是 Meme。",
     formula: "四档：低估 / 正常 / 高估 / Meme",
   },
 ];
@@ -1272,6 +1272,9 @@ function applyConsensusEstimates(consensusItems) {
         consensusProfitUsdY1: estimate.consensusProfitUsdY1,
         consensusProfitUsdY2: estimate.consensusProfitUsdY2,
         consensusProfitUsdY3: estimate.consensusProfitUsdY3,
+        consensusRevenueUsdY1: estimate.consensusRevenueUsdY1,
+        consensusRevenueUsdY2: estimate.consensusRevenueUsdY2,
+        consensusRevenueUsdY3: estimate.consensusRevenueUsdY3,
         consensusSourceQuality: estimate.sourceQuality,
         consensusSourceUrls: estimate.sourceUrls || [],
         consensusUpdatedAt: estimate.updatedAt,
@@ -1570,9 +1573,9 @@ function renderActionTodos(stock) {
   const metricsAge = dateAgeDays(metricsUpdatedAt);
 
   if (fundamentalAge === null) {
-    todos.push(["amber", "更新基本面", "缺少基本面更新时间，先补市值、未来 3 年利润、一致预期来源和行业估值口径。"]);
+    todos.push(["amber", "更新基本面", "缺少基本面更新时间，先补市值、未来 3 年利润/营收、预测来源和行业估值口径。"]);
   } else if (fundamentalAge >= 30) {
-    todos.push(["amber", "更新基本面", `基本面 ${formatUpdateAge(fundamentalUpdatedAt)}，需要复核市值、27/28/29E 利润和估值档。`]);
+    todos.push(["amber", "更新基本面", `基本面 ${formatUpdateAge(fundamentalUpdatedAt)}，需要复核市值、27/28/29E 利润/营收和估值档。`]);
   } else {
     todos.push(["green", "基本面", `${formatUpdateAge(fundamentalUpdatedAt)}，本周只需关注是否有财报/指引新变化。`]);
   }
@@ -1629,6 +1632,7 @@ function fundamentalSnapshot(stock) {
     consensusY1: fundamentals.consensusProfitUsdY1 || "待补",
     consensusY2: fundamentals.consensusProfitUsdY2 || "待补",
     consensusY3: fundamentals.consensusProfitUsdY3 || fundamentals.consensus3y || fundamentals.forward3yConsensus || valuation.consensusText || "待补",
+    revenueY3: fundamentals.consensusRevenueUsdY3 || "待补",
   };
 }
 
@@ -2361,6 +2365,7 @@ function renderRows() {
               <span>27E利润 ${fundamentals.consensusY1}</span>
               <span>28E利润 ${fundamentals.consensusY2}</span>
               <span>29E利润 ${fundamentals.consensusY3}</span>
+              <span>29E营收 ${fundamentals.revenueY3}</span>
             </div>
           </td>
           <td>
@@ -2511,7 +2516,7 @@ function renderScoreBreakdown(stock) {
     {
       label: "估值档",
       value: valuation.available ? valuation.percentile : 0,
-      note: valuation.available ? valuation.note : "缺市值或未来 3 年一致预期，不能判断估值档。",
+      note: valuation.available ? valuation.note : "缺市值或未来 3 年利润/营收预测，不能判断估值档。",
       type: valuation.available ? "risk" : "normal",
       display: valuation.available ? `${stockValuationTier.label} · ${valuation.percentile}%` : "待补",
     },
