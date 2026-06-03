@@ -42,8 +42,8 @@ const scoringModels = [
   },
   {
     title: "估值档",
-    body: "用未来 3 年一致预期判断市值是否透支：交易到第 1 年利润区间是低估，第 2 年是合理，第 3 年是透支。",
-    formula: "五档：待补 / 低估 / 合理 / 透支 / 极端透支",
+    body: "用未来 3 年一致预期判断市值是否已经进入 Meme 区：Y1 合理是低估，Y2 合理是正常，Y3 合理是高估，Y3 仍不合理就是 Meme。",
+    formula: "四档：低估 / 正常 / 高估 / Meme",
   },
 ];
 
@@ -812,7 +812,7 @@ const riskTriggerLibrary = {
     },
     {
       level: "amber",
-      title: "估值透支",
+      title: "估值高估",
       monitor: "市值 / InP 年化收入 / backlog 覆盖倍数",
       stop: "股价继续创新高，但 backlog 和毛利率没有同步上修。",
     },
@@ -919,7 +919,7 @@ const contradictionRiskLibrary = {
   AAOI: "收入验证强但股价不跟，需排查 ATM 稀释、客户集中和 LTA 是否落地。",
   MU: "财报验证强但股价不跟，需排查 HBM 供给拐点、竞争对手扩产和毛利见顶。",
   XFAB: "WBG/Photonics 高增但股价不跟，需排查 AI 纯度不足或传统业务拖累。",
-  CAMT: "HBM 订单强但股价不跟，需排查订单是否一次性、客户 capex 或估值透支。",
+  CAMT: "HBM 订单强但股价不跟，需排查订单是否一次性、客户 capex 或估值高估。",
 };
 
 const portfolioPlan = {
@@ -1717,7 +1717,7 @@ function actionForStock(stock) {
       label: "减仓",
       className: "action-reduce",
       tone: "amber",
-      reason: "市值已经超过未来第 3 年 40 倍一致预期利润，估值透支 3 年，触发卖出信号。",
+      reason: "市值用未来第 3 年利润仍无法支撑，进入 Meme 估值区，触发卖出/降仓信号。",
     };
   }
 
@@ -2511,7 +2511,7 @@ function renderScoreBreakdown(stock) {
     {
       label: "估值档",
       value: valuation.available ? valuation.percentile : 0,
-      note: valuation.available ? valuation.note : "缺市值或未来 3 年一致预期，不能判断是否透支。",
+      note: valuation.available ? valuation.note : "缺市值或未来 3 年一致预期，不能判断估值档。",
       type: valuation.available ? "risk" : "normal",
       display: valuation.available ? `${stockValuationTier.label} · ${valuation.percentile}%` : "待补",
     },
@@ -2558,7 +2558,7 @@ function compactOddsExplanation(stock, context) {
     return `可比分析支持大市值翻倍空间；验证后 ${formatMove(gain)}，估值档 ${valuation.label}。`;
   }
   if (gain >= 90) {
-    return `市场已验证，验证后 ${formatMove(gain)}；只要估值未透支，回调仍有赔率。`;
+    return `市场已验证，验证后 ${formatMove(gain)}；只要估值未进入高估/Meme，回调仍有赔率。`;
   }
   if (unknownRisk >= 55) {
     return `验证后涨幅偏弱，先排查未知信息；估值档 ${valuation.label}。`;
@@ -2678,9 +2678,9 @@ function renderAlerts(stock) {
     alerts.push(["amber", "拥挤警报：官方报道开始替代基本面成为边际买盘来源。"]);
   }
   if (valuation.available && valuation.risk >= 90) {
-    alerts.push(["red", `估值卖点：${valuation.note}`]);
+    alerts.push(["red", `Meme 估值：${valuation.note}`]);
   } else if (valuation.available && valuation.risk >= 72) {
-    alerts.push(["amber", `估值透支：${valuation.note}`]);
+    alerts.push(["amber", `估值高估：${valuation.note}`]);
   } else if (valuation.available && valuation.risk >= 35 && valuation.percentile <= 15) {
     alerts.push(["amber", `低估排查：${valuation.note}`]);
   }
@@ -2974,7 +2974,7 @@ function executionQueueForStock(stock) {
   if (light === "red" || action.label === "清仓" || action.label === "减仓" || sentimentClimaxSignal(stock)) {
     return {
       priority: 1,
-      tag: valuationSellSignal(stock) ? "估值卖点" : sentimentClimaxSignal(stock) ? "狂热见顶" : "红灯处理",
+      tag: valuationSellSignal(stock) ? "Meme估值" : sentimentClimaxSignal(stock) ? "狂热见顶" : "红灯处理",
       className: "queue-red",
       why: action.reason,
       task: "先处理卖出/降仓信号，确认是否触发公司红线或情绪见顶。",
@@ -2984,10 +2984,10 @@ function executionQueueForStock(stock) {
   if (valuation.available && valuation.risk >= 72) {
     return {
       priority: 2,
-      tag: "估值透支",
+      tag: "估值高估",
       className: "queue-amber",
       why: valuation.note,
-      task: "核对未来 3 年一致预期和行业估值分位，决定是否减仓或只保留观察仓。",
+      task: "核对 Y3 利润/营收一致预期和行业估值分位，决定是否减仓或只保留观察仓。",
     };
   }
 

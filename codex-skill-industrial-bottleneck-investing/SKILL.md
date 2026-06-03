@@ -161,13 +161,13 @@ If a stock has strong fundamentals and demand verification but rises less than 1
 
 Use future 3-year consensus profit expectations to judge valuation overdraw. If the current date is in H1, normally use current year / next year / year+2; if in H2, normally use next year / year+2 / year+3. For the current 2026 data file, Y1/Y2/Y3 maps to 2027/2028/2029 unless the data file is updated.
 
-Decision logic:
+Decision logic uses four valuation tiers:
 
-- If current market cap trades at 30-40x year-1 expected profit, show `低估`. If a verified excellent company still trades there, also investigate whether the market knows something hidden.
-- If current market cap trades at 30-40x year-2 expected profit, show `合理`.
-- If current market cap trades at 30-40x year-3 expected profit, show `透支`.
-- If current market cap is above 40x year-3 expected profit, show `极端透支` and treat it as a clear valuation sell signal.
-- If PS reaches the industry's historical top 1-2% percentile, show at least `透支`; if the stock also lacks true mass awareness, reduce odds because further upside needs hard sentiment acceleration.
+- If current market cap is reasonable against Y1 expected profit, show `低估`. If a verified excellent company still trades there, also investigate whether the market knows something hidden.
+- If current market cap is not reasonable against Y1 but is reasonable against Y2 expected profit, show `正常`.
+- If current market cap is not reasonable against Y2 but is reasonable against Y3 expected profit, show `高估`.
+- If current market cap is not reasonable even against Y3 expected profit, show `Meme` and treat it as a clear valuation sell/reduce signal.
+- If Y3 revenue / PS data is available and current market cap is not reasonable even against Y3 revenue, also classify as `Meme`. If PS reaches the industry's historical top 1-2% percentile, treat it as at least `高估`, and usually `Meme` when further upside mainly depends on extreme sentiment.
 
 ## Data Rules
 
